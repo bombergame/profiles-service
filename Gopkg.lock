@@ -3,11 +3,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a568f95fee5b2d374128babf1fc44fef3ea0f3c0f86a21c9db256531b21b68c6"
+  digest = "1:bfa1a18a6c45f0684e64d1c5a51234dfcb52fa304d04919a4c93848b4be07d70"
   name = "github.com/bombergame/common"
   packages = [
     "args",
     "env",
+    "errs",
   ]
   pruneopts = "UT"
   revision = "c0aac4b75ee481a7bd94c6d4ff4db094d638aa7c"
@@ -42,6 +43,7 @@
   input-imports = [
     "github.com/bombergame/common/args",
     "github.com/bombergame/common/env",
+    "github.com/bombergame/common/errs",
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
   ]
