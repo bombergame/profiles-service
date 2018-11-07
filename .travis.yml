@@ -1,0 +1,34 @@
+language: go
+go:
+- "1.11"
+
+jobs:
+  include:
+  - stage: build
+    script:
+    - make build
+    after_script:
+    - make clean
+
+  - stage: run unit tests
+    before_script:
+    - go get golang.org/x/tools/cmd/cover
+    - go get github.com/mattn/goveralls
+    script:
+    - make test_units
+    after_success:
+    - ${GOPATH}/bin/goveralls -coverprofile=./_test/coverage.out -service=travis-ci
+    after_script:
+    - make clean
+
+  - stage: build image
+    services:
+    - docker
+    before_script:
+    - echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+    script:
+    - docker build -t bombergame/profiles-service .
+    after_success:
+    - if [ ${TRAVIS_BRANCH} = "master" ]; then
+        docker push bombergame/profiles-service;
+      fi
