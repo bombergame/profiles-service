@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"github.com/bombergame/profiles-service/config"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -16,6 +17,7 @@ func NewService() *Service {
 	srv := &Service{
 		server: http.Server{
 			Handler: mx,
+			Addr:    ":" + config.HttpPort,
 		},
 	}
 

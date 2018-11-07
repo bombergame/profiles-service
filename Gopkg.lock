@@ -2,6 +2,17 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:a568f95fee5b2d374128babf1fc44fef3ea0f3c0f86a21c9db256531b21b68c6"
+  name = "github.com/bombergame/common"
+  packages = [
+    "args",
+    "env",
+  ]
+  pruneopts = "UT"
+  revision = "c0aac4b75ee481a7bd94c6d4ff4db094d638aa7c"
+
+[[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
@@ -29,6 +40,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/bombergame/common/args",
+    "github.com/bombergame/common/env",
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
   ]
