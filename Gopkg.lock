@@ -3,6 +3,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:25087bc75708d16fb75493dd58665083158c96e807349fbbf2b66e7bda6b256f"
+  name = "github.com/anaskhan96/go-password-encoder"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "17a4338eaa010d03739fb267ec8580be6290dd3a"
+
+[[projects]]
+  branch = "master"
   digest = "1:bfa1a18a6c45f0684e64d1c5a51234dfcb52fa304d04919a4c93848b4be07d70"
   name = "github.com/bombergame/common"
   packages = [
@@ -37,10 +45,19 @@
   revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
   version = "v1.6.2"
 
+[[projects]]
+  branch = "master"
+  digest = "1:f92f6956e4059f6a3efc14924d2dd58ba90da25cc57fe07ae3779ef2f5e0c5f2"
+  name = "golang.org/x/crypto"
+  packages = ["pbkdf2"]
+  pruneopts = "UT"
+  revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/anaskhan96/go-password-encoder",
     "github.com/bombergame/common/args",
     "github.com/bombergame/common/env",
     "github.com/bombergame/common/errs",

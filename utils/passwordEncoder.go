@@ -1,5 +1,6 @@
 package utils
 
 type PasswordEncoder interface {
-	Encode() (string, string)
+	Encode(raw string) (hash string, salt string)
+	Verify(raw string, hash string, salt string) bool
 }
