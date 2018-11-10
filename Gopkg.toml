@@ -13,7 +13,3 @@
 [[constraint]]
   branch = "master"
   name = "github.com/bombergame/common"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/anaskhan96/go-password-encoder"
