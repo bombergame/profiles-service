@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package grpc;
+
+service ProfileService {
+    rpc IncProfileScore(ProfileID) returns(Void) {}
+    rpc GetProfileIDByCredentials(Credentials) returns(ProfileID) {}
+}
+
+message Void {}
+
+message Credentials {
+    string username = 1;
+    string password = 2;
+}
+
+message ProfileID {
+    int64 value = 1;
+}
