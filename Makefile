@@ -1,5 +1,8 @@
 all: build
 
+prepare:
+	easyjson -all ./models/profile.go
+
 build:
 	go build -v -o ./_build/service .
 

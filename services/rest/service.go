@@ -3,6 +3,8 @@ package rest
 import (
 	"github.com/bombergame/common/logs"
 	"github.com/bombergame/profiles-service/config"
+	"github.com/bombergame/profiles-service/repositories"
+	"github.com/bombergame/profiles-service/repositories/postgres"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -11,6 +13,7 @@ import (
 type Service struct {
 	server http.Server
 	logger *logs.Logger
+	pfRepo repositories.ProfileRepository
 }
 
 func NewService() *Service {
@@ -18,7 +21,12 @@ func NewService() *Service {
 		server: http.Server{
 			Addr: ":" + config.HttpPort,
 		},
+
 		logger: logs.NewLogger(),
+
+		pfRepo: postgres.NewProfileRepository(
+			postgres.NewConnection(),
+		),
 	}
 
 	mx := mux.NewRouter()
