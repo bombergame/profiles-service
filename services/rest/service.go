@@ -12,14 +12,13 @@ type Service struct {
 }
 
 func NewService() *Service {
-	mx := mux.NewRouter()
-
 	srv := &Service{
 		server: http.Server{
-			Handler: mx,
 			Addr:    ":" + config.HttpPort,
 		},
 	}
+
+	mx := mux.NewRouter()
 
 	mx.Handle("/", handlers.MethodHandler{
 		http.MethodGet:  http.HandlerFunc(srv.getProfiles),
@@ -31,6 +30,8 @@ func NewService() *Service {
 		http.MethodPatch:  http.HandlerFunc(srv.updateProfile),
 		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
 	})
+
+	srv.server.Handler = withRecover(mx)
 
 	return srv
 }
