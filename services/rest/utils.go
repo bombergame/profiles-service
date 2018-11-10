@@ -54,6 +54,28 @@ func (srv *Service) readQueryInt32(r *http.Request, name string, defaultValue in
 	return int32(iv64), nil
 }
 
+func (srv *Service) readHeaderString(r *http.Request, name string) (string, error) {
+	v := r.Header.Get(name)
+	if v == "" {
+		panic("required header not set")
+	}
+	return v, nil
+}
+
+func (srv *Service) readHeaderInt64(r *http.Request, name string) (int64, error) {
+	v, err := srv.readHeaderString(r, name)
+	if err != nil {
+		return 0, err
+	}
+
+	iv64, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	return iv64, nil
+}
+
 func (srv *Service) readRequestBody(v interface{}, r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(v)
 	if err != nil {
