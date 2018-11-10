@@ -17,14 +17,14 @@ func NewProfileRepository(conn *Connection) *ProfileRepository {
 }
 
 func (r *ProfileRepository) Create(p domains.Profile) error {
-	query := `SELECT * FROM create_profile($1,$2,$3,$4);`
+	query := `SELECT * FROM create_profile($1,$2,$3);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
 		return errs.NewServiceError(err)
 	}
 
-	_, err = statement.Exec(p.Username, p.Password.Hash, p.Password.Salt, p.Email)
+	_, err = statement.Exec(p.Username, p.Password, p.Email)
 	if err != nil {
 		return wrapError(err)
 	}
@@ -61,7 +61,7 @@ func (r *ProfileRepository) FindByUsername(username string) (*domains.Profile, e
 	row := statement.QueryRow(username)
 
 	p := new(domains.Profile)
-	if err := row.Scan(&p.ID, &p.Password.Hash, &p.Password.Salt); err != nil {
+	if err := row.Scan(&p.ID); err != nil {
 		return nil, wrapError(err)
 	}
 
@@ -110,14 +110,14 @@ func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]domain
 }
 
 func (r *ProfileRepository) Update(id int64, p domains.Profile) error {
-	query := `SELECT * FROM update_profile($1,$2,$3,$4,$5);`
+	query := `SELECT * FROM update_profile($1,$2,$3,$4);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
 		return errs.NewServiceError(err)
 	}
 
-	_, err = statement.Exec(id, p.Username, p.Password.Hash, p.Password.Salt, p.Email)
+	_, err = statement.Exec(id, p.Username, p.Password, p.Email)
 	if err != nil {
 		return wrapError(err)
 	}
@@ -139,14 +139,6 @@ func (r *ProfileRepository) Delete(id int64) error {
 	}
 
 	return nil
-}
-
-func parseProfile(scanFunc func(...interface{}) error) (*domains.Profile, error) {
-	p := new(domains.Profile)
-	if err := scanFunc(&p.ID, &p.Username, &p.Password, &p.Email, &p.Score); err != nil {
-		return nil, err
-	}
-	return p, nil
 }
 
 func wrapError(err error) error {

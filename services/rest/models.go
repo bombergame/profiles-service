@@ -5,6 +5,7 @@ import (
 	"github.com/bombergame/profiles-service/domains"
 )
 
+// easyjson:json
 type Profile struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
@@ -21,6 +22,7 @@ func (p Profile) Prepare(pf domains.Profile) {
 
 type Profiles []domains.Profile
 
+// easyjson:json
 type NewProfileData struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -48,6 +50,7 @@ func (p NewProfileData) Prepare() domains.Profile {
 	}
 }
 
+// easyjson:json
 type ProfileDataUpdate struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
