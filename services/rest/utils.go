@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"encoding/json"
+	"github.com/bombergame/common/errs"
 	"net/http"
 )
 
@@ -20,6 +22,14 @@ func (w *LoggingResponseWriter) Write(b []byte) (int, error) {
 func (w *LoggingResponseWriter) WriteHeader(status int) {
 	w.status = status
 	w.writer.WriteHeader(status)
+}
+
+func (srv *Service) readRequestBody(v interface{}, r *http.Request) error {
+	err := json.NewDecoder(r.Body).Decode(v)
+	if err != nil {
+		return errs.NewInvalidFormatError("invalid request body")
+	}
+	return nil
 }
 
 func (srv *Service) writeOk(w http.ResponseWriter) {

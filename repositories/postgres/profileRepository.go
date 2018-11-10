@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"github.com/bombergame/common/errs"
-	"github.com/bombergame/profiles-service/models"
+	"github.com/bombergame/profiles-service/domains"
 	"strings"
 )
 
@@ -16,7 +16,7 @@ func NewProfileRepository(conn *Connection) *ProfileRepository {
 	}
 }
 
-func (r *ProfileRepository) Create(p models.Profile) error {
+func (r *ProfileRepository) Create(p domains.Profile) error {
 	query := `SELECT * FROM create_profile($1,$2,$3,$4);`
 
 	statement, err := r.conn.db.Prepare(query)
@@ -32,7 +32,7 @@ func (r *ProfileRepository) Create(p models.Profile) error {
 	return nil
 }
 
-func (r *ProfileRepository) FindByID(id int64) (*models.Profile, error) {
+func (r *ProfileRepository) FindByID(id int64) (*domains.Profile, error) {
 	query := `SELECT * FROM get_profile($1);`
 
 	statement, err := r.conn.db.Prepare(query)
@@ -42,7 +42,7 @@ func (r *ProfileRepository) FindByID(id int64) (*models.Profile, error) {
 
 	row := statement.QueryRow(id)
 
-	p := new(models.Profile)
+	p := new(domains.Profile)
 	if err := row.Scan(&p.ID, &p.Username, &p.Email, &p.Score); err != nil {
 		return nil, wrapError(err)
 	}
@@ -50,7 +50,7 @@ func (r *ProfileRepository) FindByID(id int64) (*models.Profile, error) {
 	return p, nil
 }
 
-func (r *ProfileRepository) FindByUsername(username string) (*models.Profile, error) {
+func (r *ProfileRepository) FindByUsername(username string) (*domains.Profile, error) {
 	query := `SELECT * FROM get_profile($1);`
 
 	statement, err := r.conn.db.Prepare(query)
@@ -60,7 +60,7 @@ func (r *ProfileRepository) FindByUsername(username string) (*models.Profile, er
 
 	row := statement.QueryRow(username)
 
-	p := new(models.Profile)
+	p := new(domains.Profile)
 	if err := row.Scan(&p.ID, &p.Password.Hash, &p.Password.Salt); err != nil {
 		return nil, wrapError(err)
 	}
@@ -72,7 +72,7 @@ func (r *ProfileRepository) FindByUsername(username string) (*models.Profile, er
 	return p, nil
 }
 
-func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]models.Profile, error) {
+func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]domains.Profile, error) {
 	if pageIndex < 1 {
 		return nil, errs.NewInvalidFormatError("constraint violation: page index < 1")
 	}
@@ -93,9 +93,9 @@ func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]models
 	}
 	defer rows.Close()
 
-	pf := make([]models.Profile, 0)
+	pf := make([]domains.Profile, 0)
 	for rows.Next() {
-		var p models.Profile
+		var p domains.Profile
 		if err := rows.Scan(&p.ID, &p.Username, &p.Email, &p.Score); err != nil {
 			return nil, wrapError(err)
 		}
@@ -109,7 +109,7 @@ func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]models
 	return pf, nil
 }
 
-func (r *ProfileRepository) Update(id int64, p models.Profile) error {
+func (r *ProfileRepository) Update(id int64, p domains.Profile) error {
 	query := `SELECT * FROM update_profile($1,$2,$3,$4,$5);`
 
 	statement, err := r.conn.db.Prepare(query)
@@ -141,8 +141,8 @@ func (r *ProfileRepository) Delete(id int64) error {
 	return nil
 }
 
-func parseProfile(scanFunc func(...interface{}) error) (*models.Profile, error) {
-	p := new(models.Profile)
+func parseProfile(scanFunc func(...interface{}) error) (*domains.Profile, error) {
+	p := new(domains.Profile)
 	if err := scanFunc(&p.ID, &p.Username, &p.Password, &p.Email, &p.Score); err != nil {
 		return nil, err
 	}

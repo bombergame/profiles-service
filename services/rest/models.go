@@ -1,18 +1,25 @@
-package models
+package rest
 
 import (
 	"github.com/bombergame/common/errs"
+	"github.com/bombergame/profiles-service/domains"
 )
 
 type Profile struct {
-	ID       int64    `json:"id"`
-	Username string   `json:"username"`
-	Password Password `json:"-"`
-	Email    string   `json:"email"`
-	Score    int32    `json:"score"`
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Score    int32  `json:"score"`
 }
 
-type Profiles []Profile
+func (p Profile) Prepare(pf domains.Profile) {
+	p.ID = pf.ID
+	p.Username = pf.Username
+	p.Email = pf.Email
+	p.Score = pf.Score
+}
+
+type Profiles []domains.Profile
 
 type NewProfileData struct {
 	Username string `json:"username"`
@@ -33,13 +40,11 @@ func (p NewProfileData) Validate() error {
 	return nil
 }
 
-func (p NewProfileData) Prepare() Profile {
-	return Profile{
+func (p NewProfileData) Prepare() domains.Profile {
+	return domains.Profile{
 		Username: p.Username,
-		Password: Password{
-			Raw: p.Password,
-		},
-		Email: p.Email,
+		Password: p.Password,
+		Email:    p.Email,
 	}
 }
 
@@ -56,18 +61,10 @@ func (p ProfileDataUpdate) Validate() error {
 	return nil
 }
 
-func (p ProfileDataUpdate) Prepare() Profile {
-	return Profile{
+func (p ProfileDataUpdate) Prepare() domains.Profile {
+	return domains.Profile{
 		Username: p.Username,
-		Password: Password{
-			Raw: p.Password,
-		},
-		Email: p.Email,
+		Password: p.Password,
+		Email:    p.Email,
 	}
-}
-
-type Password struct {
-	Raw  string `json:"-"`
-	Hash string `json:"-"`
-	Salt string `json:"-"`
 }
