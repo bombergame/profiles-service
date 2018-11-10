@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/bombergame/common/errs"
 	"net/http"
+	"strconv"
 )
 
 type LoggingResponseWriter struct {
@@ -24,6 +25,20 @@ func (w *LoggingResponseWriter) WriteHeader(status int) {
 	w.writer.WriteHeader(status)
 }
 
+func (srv *Service) readQueryInt32(r *http.Request, name string, defaultValue int32) (int32, error) {
+	v := r.URL.Query().Get(name)
+	if v == "" {
+		return defaultValue, nil
+	}
+
+	iv64, err := strconv.ParseInt(v, 10, 32)
+	if err != nil {
+		return 0, errs.NewInvalidFormatError("query param type mismatch")
+	}
+
+	return int32(iv64), nil
+}
+
 func (srv *Service) readRequestBody(v interface{}, r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(v)
 	if err != nil {
@@ -36,39 +51,47 @@ func (srv *Service) writeOk(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (srv *Service) writeOkWithBody(w http.ResponseWriter, v interface{}) {
+	srv.writeJSON(w, v)
+	srv.writeOk(w)
+}
+
 func (srv *Service) writeError(w http.ResponseWriter, status int) {
 	w.WriteHeader(status)
 }
 
 func (srv *Service) writeErrorWithBody(w http.ResponseWriter, err error) {
+	status := http.StatusInternalServerError
+
 	switch srvErr := err.(type) {
 	case *errs.NotAuthorizedError:
-		w.WriteHeader(http.StatusUnauthorized)
+		status = http.StatusUnauthorized
 
 	case *errs.AccessDeniedError:
-		w.WriteHeader(http.StatusForbidden)
+		status = http.StatusForbidden
 
 	case *errs.InvalidFormatError:
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		status = http.StatusUnprocessableEntity
 
 	case *errs.DuplicateError:
-		w.WriteHeader(http.StatusConflict)
+		status = http.StatusConflict
 
 	case *errs.NotFoundError:
-		w.WriteHeader(http.StatusNotFound)
+		status = http.StatusNotFound
 
 	case *errs.ServiceError:
 		srv.logger.Error(srvErr.InnerError())
-		w.WriteHeader(http.StatusInternalServerError)
+		status = http.StatusInternalServerError
 
 	default:
 		srv.logger.Error(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
 		srv.writeText(w, errs.ServiceErrorMessage)
+		srv.writeError(w, http.StatusInternalServerError)
 		return
 	}
 
 	srv.writeText(w, err.Error())
+	srv.writeError(w, status)
 }
 
 func (srv *Service) writeText(w http.ResponseWriter, txt string) {

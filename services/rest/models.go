@@ -13,14 +13,12 @@ type Profile struct {
 	Score    int32  `json:"score"`
 }
 
-func (p Profile) Prepare(pf domains.Profile) {
+func (p *Profile) Prepare(pf domains.Profile) {
 	p.ID = pf.ID
 	p.Username = pf.Username
 	p.Email = pf.Email
 	p.Score = pf.Score
 }
-
-type Profiles []domains.Profile
 
 // easyjson:json
 type NewProfileData struct {
@@ -70,4 +68,15 @@ func (p ProfileDataUpdate) Prepare() domains.Profile {
 		Password: p.Password,
 		Email:    p.Email,
 	}
+}
+
+// easyjson:json
+type Profiles []Profile
+
+func (p *Profiles) Prepare(pf []domains.Profile) {
+	sl := make([]Profile, len(pf))
+	for i := 0; i < len(pf); i++ {
+		sl[i].Prepare(pf[i])
+	}
+	*p = Profiles(sl)
 }

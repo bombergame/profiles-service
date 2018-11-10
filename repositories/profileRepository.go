@@ -10,6 +10,8 @@ type ProfileRepository interface {
 	FindByID(id int64) (*domains.Profile, error)
 	FindIDByCredentials(username, password string) (*int64, error)
 
+	GetAllPaginated(pageIndex, pageSize int32) ([]domains.Profile, error)
+
 	Update(id int64, p domains.Profile) error
 
 	Delete(id int64) error
