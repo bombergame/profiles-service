@@ -32,15 +32,6 @@ func (srv *Service) withLogs(h http.Handler) http.Handler {
 	)
 }
 
-func (srv *Service) withAuthPass(h http.Handler) http.Handler {
-	return http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			//TODO
-			h.ServeHTTP(w, r)
-		},
-	)
-}
-
 func (srv *Service) withAuthRestrict(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

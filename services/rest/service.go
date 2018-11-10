@@ -39,7 +39,7 @@ func NewService(c *Config) *Service {
 	})
 
 	mx.Handle("/{profile_id:[0-9]+}", handlers.MethodHandler{
-		http.MethodGet:    srv.withAuthPass(http.HandlerFunc(srv.getProfile)),
+		http.MethodGet:    http.HandlerFunc(srv.getProfile),
 		http.MethodPatch:  srv.withAuthRestrict(http.HandlerFunc(srv.updateProfile)),
 		http.MethodDelete: srv.withAuthRestrict(http.HandlerFunc(srv.deleteProfile)),
 	})
