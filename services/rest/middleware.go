@@ -1,10 +1,11 @@
 package rest
 
 import (
+	"fmt"
 	"net/http"
 )
 
-func withRecover(h http.Handler) http.Handler {
+func (srv *Service) withRecover(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
@@ -17,7 +18,20 @@ func withRecover(h http.Handler) http.Handler {
 	)
 }
 
-func withAuthPass(h http.Handler) http.Handler {
+func (srv *Service) withLogs(h http.Handler) http.Handler {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			wr := &LoggingResponseWriter{
+				writer: w,
+			}
+			h.ServeHTTP(wr, r)
+
+			srv.logger.Info(fmt.Sprintf("%s %s %d", r.Method, r.URL.Path, wr.status))
+		},
+	)
+}
+
+func (srv *Service) withAuthPass(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			//TODO

@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"github.com/bombergame/common/logs"
 	"github.com/bombergame/profiles-service/config"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -9,13 +10,15 @@ import (
 
 type Service struct {
 	server http.Server
+	logger *logs.Logger
 }
 
 func NewService() *Service {
 	srv := &Service{
 		server: http.Server{
-			Addr:    ":" + config.HttpPort,
+			Addr: ":" + config.HttpPort,
 		},
+		logger: logs.NewLogger(),
 	}
 
 	mx := mux.NewRouter()
@@ -31,7 +34,7 @@ func NewService() *Service {
 		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
 	})
 
-	srv.server.Handler = withRecover(mx)
+	srv.server.Handler = srv.withLogs(srv.withRecover(mx))
 
 	return srv
 }
