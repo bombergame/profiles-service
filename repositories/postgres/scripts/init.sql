@@ -1,168 +1,164 @@
-CREATE TABLE IF NOT EXISTS profile(
-  "id" BIGSERIAL
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE OR REPLACE FUNCTION encrypt_password(_password_ TEXT)
+  RETURNS TEXT
+AS $$
+SELECT crypt(_password_, gen_salt('md5'));
+$$
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION check_password(
+  _password_ TEXT, _encoded_ TEXT)
+  RETURNS BOOLEAN
+AS $$
+SELECT _encoded_ = crypt(_password_, _encoded_);
+$$
+LANGUAGE SQL;
+
+CREATE TABLE IF NOT EXISTS profile (
+  "id"       BIGSERIAL
     CONSTRAINT "profile_id_primary_key" PRIMARY KEY,
 
-  "username" VARCHAR(20)
+  "username" TEXT
     CONSTRAINT "profile_username_not_null" NOT NULL
     CONSTRAINT "profile_username_unique" UNIQUE
-    CONSTRAINT "profile_username_check" CHECK("username" ~ '^\w+$'),
+    CONSTRAINT "profile_username_check" CHECK ("username" ~ '^\w+$'),
 
-  "password_hash" VARCHAR(256)
-    CONSTRAINT "profile_password_hash_not_null" NOT NULL,
+  "password" TEXT
+    CONSTRAINT "profile_password_not_null" NOT NULL,
 
-  "password_salt" VARCHAR(256)
-    CONSTRAINT "profile_password_salt_not_null" NOT NULL,
-
-  "email" VARCHAR(100)
+  "email"    TEXT
     CONSTRAINT "profile_email_not_null" NOT NULL
     CONSTRAINT "profile_email_unique" UNIQUE
-    CONSTRAINT "profile_email_check" CHECK(email ~ '^.+@.+$'),
+    CONSTRAINT "profile_email_check" CHECK (email ~ '^.+@.+$'),
 
-  "score" INTEGER
+  "score"    INTEGER
     DEFAULT 0
     CONSTRAINT "profile_score_not_null" NOT NULL
-    CONSTRAINT "profile_score_check" CHECK("score" >= 0)
+    CONSTRAINT "profile_score_check" CHECK ("score" >= 0),
+
+  "active"   BOOLEAN
+    DEFAULT TRUE
+    CONSTRAINT "profile_active_not_null" NOT NULL
 );
 
-CREATE OR REPLACE FUNCTION create_profile(
-  _username_ TEXT, _password_hash_ TEXT, _password_salt_ TEXT, _email_ TEXT)
-RETURNS VOID
+CREATE OR REPLACE PROCEDURE create_profile(
+  _username_ TEXT, _password_ TEXT, _email_ TEXT)
 AS $$
 BEGIN
-  INSERT INTO "profile"("username", "password_hash", "password_salt", "email")
-  VALUES(_username_, _password_hash_, _password_salt_, _email_);
+  INSERT INTO "profile" ("username", "password", "email")
+  VALUES (_username_, encrypt_password(_password_), _email_);
 END;
 $$
-LANGUAGE plpgsql;
+LANGUAGE PLPGSQL;
 
-CREATE TYPE "profile_info" AS (
-  "id" BIGINT, "username" TEXT, "email" TEXT, "score" INTEGER
-);
-
-CREATE OR REPLACE FUNCTION get_profile(_profile_id_ BIGINT)
-RETURNS "profile_info"
+CREATE OR REPLACE PROCEDURE update_profile(_profile_id_ BIGINT,
+                                           _username_   TEXT,
+                                           _password_   TEXT,
+                                           _email_      TEXT)
 AS $$
-DECLARE _result_ "profile_info";
+DECLARE _profile_ "profile";
+BEGIN
+  SELECT p.* FROM "profile" p WHERE p."id" = _profile_id_
+                                AND p."active"
+      INTO _profile_;
+
+  IF _profile_ IS NULL
+  THEN
+    RAISE 'profile not found';
+  END IF;
+
+  IF _username_ != ''
+  THEN
+    _profile_."username" := _username_;
+  END IF;
+  IF _password_ != ''
+  THEN
+    _profile_."password" := encrypt_password(_password_);
+  END IF;
+  IF _email_ != ''
+  THEN
+    _profile_."email" := _email_;
+  END IF;
+
+  UPDATE "profile"
+  SET "username" = _profile_."username",
+      "password" = _profile_."password",
+      "email"    = _profile_."email"
+  WHERE "id" = _profile_id_;
+END;
+$$
+LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE PROCEDURE delete_profile(_profile_id_ BIGINT)
+AS $$
+BEGIN
+  IF NOT EXISTS(
+      SELECT * FROM "profile" p WHERE p."id" = _profile_id_
+                                  AND p."active")
+  THEN
+    RAISE 'profile not found';
+  END IF;
+
+  UPDATE "profile" SET "active" = FALSE WHERE "id" = _profile_id_;
+END;
+$$
+LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION get_profile(IN  _profile_id_ BIGINT,
+                                       OUT _username_   TEXT, OUT _email_ TEXT, OUT _score_ INTEGER)
+  RETURNS RECORD
+AS $$
+DECLARE _id_ INTEGER;
 BEGIN
   SELECT p."id", p."username", p."email", p."score"
   FROM "profile" p
   WHERE "id" = _profile_id_
-  INTO _result_;
+    AND p."active"
+      INTO _id_, _username_, _email_, _score_;
 
-  IF _result_ IS NULL THEN
-    RAISE 'profile not found';
+  IF _id_ IS NULL
+  THEN
+    RAISE EXCEPTION 'profile not found';
   END IF;
-
-  RETURN _result_;
 END;
 $$
-LANGUAGE plpgsql;
+LANGUAGE PLPGSQL;
 
-CREATE TYPE "id_password_info" AS (
-  "id" BIGINT, "password_hash" TEXT, "PASSWORD_SALT" TEXT
-);
-
-CREATE OR REPLACE FUNCTION get_profile(_username_ TEXT)
-  RETURNS "id_password_info"
+CREATE OR REPLACE FUNCTION get_profile_id(
+  _username_ TEXT, _password_ TEXT)
+  RETURNS BIGINT
 AS $$
-DECLARE _result_ "id_password_info";
+DECLARE _profile_id_ BIGINT;
 BEGIN
-  SELECT p."id", p."password_hash", p."password_salt"
+  SELECT p."id", p."password"
   FROM "profile" p
-  WHERE "username" = _username_
-  INTO _result_;
+  WHERE p."username" = _username_
+    AND p."active"
+    AND check_password(_password_, p."password")
+      INTO _profile_id_;
 
-  IF _result_ IS NULL THEN
+  IF _profile_id_ IS NULL
+  THEN
     RAISE 'profile not found';
   END IF;
 
-  RETURN _result_;
+  RETURN _profile_id_;
 END;
 $$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION update_profile(_profile_id_ BIGINT,
-  _username_ TEXT, _password_hash_ TEXT, _password_salt_ TEXT, _email_ TEXT)
-RETURNS VOID
-AS $$
-DECLARE _profile_ "profile";
-BEGIN
-  SELECT * FROM "profile" WHERE "id" = _profile_id_
-  INTO _profile_;
-
-  IF _profile_ IS NULL THEN
-    RAISE 'profile not found';
-  END IF;
-
-  IF _username_ != '' THEN
-    _profile_."username" := _username_;
-  END IF;
-  IF _password_hash_ != '' THEN
-    _profile_."password_hash" := _password_hash_;
-  END IF;
-  IF _password_salt_ != '' THEN
-    _profile_."password_hash" := _password_hash_;
-  END IF;
-  IF _email_ != '' THEN
-    _profile_."email" := _email_;
-  END IF;
-
-  UPDATE "profile" SET
-    "username" = _profile_."username",
-    "password_hash" = _profile_."password_hash",
-    "password_salt" = _profile_."password_salt",
-    "email" = _profile_."email"
-  WHERE "id" = _profile_id_;
-END;
-$$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION delete_profile(_profile_id_ BIGINT)
-RETURNS VOID
-AS $$
-DECLARE _profile_ "profile";
-BEGIN
-  DELETE FROM "profile" WHERE "id" = _profile_id_
-  RETURNING * INTO _profile_;
-  IF _profile_ IS NULL THEN
-    RAISE 'profile not found';
-  END IF;
-END;
-$$
-LANGUAGE plpgsql;
+LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION get_all_profiles(
   _page_index_ INTEGER, _page_size_ INTEGER)
-RETURNS SETOF "profile_info"
+  RETURNS TABLE(
+    "id" BIGINT, "username" TEXT, "email" TEXT, "score" INTEGER
+  )
 AS $$
-  SELECT p."id", p."username", p."email", p."score"
-  FROM "profile" p
-  ORDER BY p."score", p."username"
-  LIMIT _page_size_ OFFSET _page_index_;
+SELECT p."id", p."username", p."email", p."score"
+FROM "profile" p
+WHERE p."active"
+ORDER BY p."score", p."username"
+LIMIT _page_size_
+OFFSET _page_index_;
 $$
-LANGUAGE sql;
-
-CREATE OR REPLACE FUNCTION update_profile_score(
-  _profile_id_ BIGINT, _score_diff_ INTEGER)
-RETURNS VOID
-AS $$
-DECLARE _score_ INTEGER;
-BEGIN
-  SELECT "score" FROM "profile" WHERE "id" = _profile_id_
-  INTO _score_;
-
-  IF _score_ IS NULL THEN
-    RAISE 'profile not found';
-  END IF;
-
-  _score_ := _score_ + _score_diff_;
-  IF _score_ < 0 THEN
-    _score_ = 0;
-  END IF;
-
-  UPDATE "profile" SET
-    "score" = _score_
-  WHERE "id" = _profile_id_;
-END;
-$$
-LANGUAGE plpgsql;
+LANGUAGE SQL;

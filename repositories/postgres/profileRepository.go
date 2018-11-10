@@ -17,7 +17,7 @@ func NewProfileRepository(conn *Connection) *ProfileRepository {
 }
 
 func (r *ProfileRepository) Create(p domains.Profile) error {
-	query := `SELECT * FROM create_profile($1,$2,$3);`
+	query := `CALL create_profile($1,$2,$3);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
@@ -43,15 +43,16 @@ func (r *ProfileRepository) FindByID(id int64) (*domains.Profile, error) {
 	row := statement.QueryRow(id)
 
 	p := new(domains.Profile)
-	if err := row.Scan(&p.ID, &p.Username, &p.Email, &p.Score); err != nil {
+	if err := row.Scan(&p.Username, &p.Email, &p.Score); err != nil {
 		return nil, wrapError(err)
 	}
 
+	p.ID = id
 	return p, nil
 }
 
-func (r *ProfileRepository) FindByUsername(username string) (*domains.Profile, error) {
-	query := `SELECT * FROM get_profile($1);`
+func (r *ProfileRepository) FindIDByCredentials(username, password string) (*int64, error) {
+	query := `SELECT * FROM get_profile_id($1);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
@@ -60,27 +61,23 @@ func (r *ProfileRepository) FindByUsername(username string) (*domains.Profile, e
 
 	row := statement.QueryRow(username)
 
-	p := new(domains.Profile)
-	if err := row.Scan(&p.ID); err != nil {
+	id := new(int64)
+	if err := row.Scan(id); err != nil {
 		return nil, wrapError(err)
 	}
 
-	if err != nil {
-		return nil, wrapError(err)
-	}
-
-	return p, nil
+	return id, nil
 }
 
 func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]domains.Profile, error) {
 	if pageIndex < 1 {
-		return nil, errs.NewInvalidFormatError("constraint violation: page index < 1")
+		return nil, errs.NewInvalidFormatError("wrong page index")
 	}
 	if pageSize < 1 {
-		return nil, errs.NewInvalidFormatError("constraint violation: page size < 1")
+		return nil, errs.NewInvalidFormatError("wrong page size")
 	}
 
-	query := `SELECT * FROM get_all_profiles_paginated($1,$2);`
+	query := `SELECT * FROM get_all_profiles($1,$2);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
@@ -110,7 +107,7 @@ func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]domain
 }
 
 func (r *ProfileRepository) Update(id int64, p domains.Profile) error {
-	query := `SELECT * FROM update_profile($1,$2,$3,$4);`
+	query := `CALL update_profile($1,$2,$3,$4);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
@@ -126,7 +123,7 @@ func (r *ProfileRepository) Update(id int64, p domains.Profile) error {
 }
 
 func (r *ProfileRepository) Delete(id int64) error {
-	query := `SELECT * FROM delete_profile($1);`
+	query := `CALL delete_profile($1);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
