@@ -1,10 +1,10 @@
 package rest
 
 import (
+	"context"
 	"github.com/bombergame/common/logs"
 	"github.com/bombergame/profiles-service/config"
 	"github.com/bombergame/profiles-service/repositories"
-	"github.com/bombergame/profiles-service/repositories/postgres"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -16,17 +16,19 @@ type Service struct {
 	pfRepo repositories.ProfileRepository
 }
 
-func NewService() *Service {
+type Config struct {
+	Logger     *logs.Logger
+	Repository repositories.ProfileRepository
+}
+
+func NewService(c *Config) *Service {
 	srv := &Service{
+		logger: c.Logger,
+		pfRepo: c.Repository,
+
 		server: http.Server{
 			Addr: ":" + config.HttpPort,
 		},
-
-		logger: logs.NewLogger(),
-
-		pfRepo: postgres.NewProfileRepository(
-			postgres.NewConnection(),
-		),
 	}
 
 	mx := mux.NewRouter()
@@ -48,5 +50,11 @@ func NewService() *Service {
 }
 
 func (srv *Service) Run() error {
+	srv.logger.Info("rest service address: " + srv.server.Addr)
 	return srv.server.ListenAndServe()
+}
+
+func (srv *Service) Shutdown() error {
+	srv.logger.Info("rest service shutdown initialized")
+	return srv.server.Shutdown(context.TODO())
 }

@@ -10,7 +10,8 @@ func (srv *Service) withRecover(h http.Handler) http.Handler {
 		func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if r := recover(); r != nil {
-					//TODO
+					srv.logger.Error(r)
+					srv.writeError(w, http.StatusInternalServerError)
 				}
 			}()
 			h.ServeHTTP(w, r)

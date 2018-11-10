@@ -8,7 +8,7 @@ type ProfileRepository interface {
 	Create(p domains.Profile) error
 
 	FindByID(id int64) (*domains.Profile, error)
-	FindByUsername(username string) (*domains.Profile, error)
+	FindIDByCredentials(username, password string) (*int64, error)
 
 	Update(id int64, p domains.Profile) error
 
