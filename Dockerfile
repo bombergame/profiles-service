@@ -8,5 +8,5 @@ FROM alpine:latest
 WORKDIR /tmp
 COPY --from=base /tmp/service .
 COPY --from=base /tmp/scripts ./scripts
-ENTRYPOINT ./service --http_port=80 --grpc_port=3000 --init_storage --storage_scripts_path=./scripts
+ENTRYPOINT ./service --http_port=80 --grpc_port=3000
 EXPOSE 80 3000

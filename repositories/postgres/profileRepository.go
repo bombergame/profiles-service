@@ -52,14 +52,14 @@ func (r *ProfileRepository) FindByID(id int64) (*domains.Profile, error) {
 }
 
 func (r *ProfileRepository) FindIDByCredentials(username, password string) (*int64, error) {
-	query := `SELECT * FROM get_profile_id($1);`
+	query := `SELECT * FROM get_profile_id($1,$2);`
 
 	statement, err := r.conn.db.Prepare(query)
 	if err != nil {
 		return nil, errs.NewServiceError(err)
 	}
 
-	row := statement.QueryRow(username)
+	row := statement.QueryRow(username, password)
 
 	id := new(int64)
 	if err := row.Scan(id); err != nil {
