@@ -15,7 +15,4 @@ var (
 	StorageUser     = env.GetVar("PROFILE_SERVICE_DB_USER", "user")
 	StoragePassword = env.GetVar("PROFILE_SERVICE_DB_PASSWORD", "password")
 	StorageSSLMode  = env.GetVar("PROFILE_SERVICE_DB_SSL_MODE", "disable")
-
-	ShouldInitStorage  = args.GetFlag("init_storage", false)
-	StorageScriptsPath = args.GetString("storage_scripts_path", "./scripts")
 )
