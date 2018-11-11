@@ -148,7 +148,7 @@ func init() {
 func init() { proto.RegisterFile("service.proto", fileDescriptor_a0b84a42fa06f626) }
 
 var fileDescriptor_a0b84a42fa06f626 = []byte{
-	// 199 bytes of a gzipped FileDescriptorProto
+	// 201 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2d, 0x4e, 0x2d, 0x2a,
 	0xcb, 0x4c, 0x4e, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x49, 0x2f, 0x2a, 0x48, 0x56,
 	0x62, 0xe3, 0x62, 0x09, 0xcb, 0xcf, 0x4c, 0x51, 0x72, 0xe5, 0xe2, 0x76, 0x2e, 0x4a, 0x4d, 0x49,
@@ -156,12 +156,12 @@ var fileDescriptor_a0b84a42fa06f626 = []byte{
 	0xcc, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0xf3, 0x41, 0x72, 0x05, 0x89, 0xc5,
 	0xc5, 0xe5, 0xf9, 0x45, 0x29, 0x12, 0x4c, 0x10, 0x39, 0x18, 0x5f, 0x49, 0x91, 0x8b, 0x33, 0xa0,
 	0x28, 0x3f, 0x2d, 0x33, 0x27, 0xd5, 0xd3, 0x45, 0x48, 0x84, 0x8b, 0xb5, 0x2c, 0x31, 0xa7, 0x14,
-	0x62, 0x02, 0x73, 0x10, 0x84, 0x63, 0xd4, 0xca, 0xc8, 0xc5, 0x07, 0x55, 0x13, 0x0c, 0x71, 0x90,
-	0x90, 0x01, 0x17, 0xbf, 0x67, 0x5e, 0x32, 0x4c, 0x30, 0x39, 0xbf, 0x28, 0x55, 0x88, 0x5f, 0x0f,
-	0xe4, 0x3c, 0x3d, 0xb8, 0x61, 0x52, 0x5c, 0x10, 0x01, 0xb0, 0x63, 0x19, 0x84, 0x1c, 0xb9, 0x24,
-	0xdd, 0x53, 0x4b, 0xe0, 0xb2, 0x4e, 0x95, 0xc8, 0x8e, 0x17, 0x84, 0x28, 0x45, 0x12, 0x92, 0x42,
-	0x37, 0x4e, 0x89, 0x21, 0x89, 0x0d, 0x1c, 0x0c, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xf9,
-	0x21, 0x56, 0x1a, 0x17, 0x01, 0x00, 0x00,
+	0x62, 0x02, 0x73, 0x10, 0x84, 0x63, 0xd4, 0xc6, 0xc8, 0xc5, 0x0f, 0x55, 0x53, 0x1c, 0x0c, 0x71,
+	0x91, 0x90, 0x01, 0x17, 0xbf, 0x67, 0x5e, 0x32, 0x54, 0x34, 0x38, 0x39, 0xbf, 0x28, 0x55, 0x88,
+	0x5f, 0x0f, 0xe4, 0x3e, 0x3d, 0xb8, 0x69, 0x52, 0x5c, 0x10, 0x01, 0xb0, 0x6b, 0x19, 0x84, 0x1c,
+	0xb9, 0x24, 0xdd, 0x53, 0x4b, 0xe0, 0xb2, 0x4e, 0x95, 0xc8, 0xae, 0x17, 0x84, 0x28, 0x45, 0x12,
+	0x92, 0x42, 0x37, 0x4e, 0x89, 0x21, 0x89, 0x0d, 0x1c, 0x0e, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff,
+	0xff, 0x4f, 0x28, 0xc3, 0xae, 0x18, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -172,97 +172,97 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// ProfileServiceClient is the client API for ProfileService service.
+// ProfilesServiceClient is the client API for ProfilesService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type ProfileServiceClient interface {
+type ProfilesServiceClient interface {
 	IncProfileScore(ctx context.Context, in *ProfileID, opts ...grpc.CallOption) (*Void, error)
 	GetProfileIDByCredentials(ctx context.Context, in *Credentials, opts ...grpc.CallOption) (*ProfileID, error)
 }
 
-type profileServiceClient struct {
+type profilesServiceClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewProfileServiceClient(cc *grpc.ClientConn) ProfileServiceClient {
-	return &profileServiceClient{cc}
+func NewProfilesServiceClient(cc *grpc.ClientConn) ProfilesServiceClient {
+	return &profilesServiceClient{cc}
 }
 
-func (c *profileServiceClient) IncProfileScore(ctx context.Context, in *ProfileID, opts ...grpc.CallOption) (*Void, error) {
+func (c *profilesServiceClient) IncProfileScore(ctx context.Context, in *ProfileID, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
-	err := c.cc.Invoke(ctx, "/grpc.ProfileService/IncProfileScore", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.ProfilesService/IncProfileScore", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *profileServiceClient) GetProfileIDByCredentials(ctx context.Context, in *Credentials, opts ...grpc.CallOption) (*ProfileID, error) {
+func (c *profilesServiceClient) GetProfileIDByCredentials(ctx context.Context, in *Credentials, opts ...grpc.CallOption) (*ProfileID, error) {
 	out := new(ProfileID)
-	err := c.cc.Invoke(ctx, "/grpc.ProfileService/GetProfileIDByCredentials", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.ProfilesService/GetProfileIDByCredentials", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ProfileServiceServer is the server API for ProfileService service.
-type ProfileServiceServer interface {
+// ProfilesServiceServer is the server API for ProfilesService service.
+type ProfilesServiceServer interface {
 	IncProfileScore(context.Context, *ProfileID) (*Void, error)
 	GetProfileIDByCredentials(context.Context, *Credentials) (*ProfileID, error)
 }
 
-func RegisterProfileServiceServer(s *grpc.Server, srv ProfileServiceServer) {
-	s.RegisterService(&_ProfileService_serviceDesc, srv)
+func RegisterProfilesServiceServer(s *grpc.Server, srv ProfilesServiceServer) {
+	s.RegisterService(&_ProfilesService_serviceDesc, srv)
 }
 
-func _ProfileService_IncProfileScore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProfilesService_IncProfileScore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProfileID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProfileServiceServer).IncProfileScore(ctx, in)
+		return srv.(ProfilesServiceServer).IncProfileScore(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/grpc.ProfileService/IncProfileScore",
+		FullMethod: "/grpc.ProfilesService/IncProfileScore",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProfileServiceServer).IncProfileScore(ctx, req.(*ProfileID))
+		return srv.(ProfilesServiceServer).IncProfileScore(ctx, req.(*ProfileID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProfileService_GetProfileIDByCredentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProfilesService_GetProfileIDByCredentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Credentials)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProfileServiceServer).GetProfileIDByCredentials(ctx, in)
+		return srv.(ProfilesServiceServer).GetProfileIDByCredentials(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/grpc.ProfileService/GetProfileIDByCredentials",
+		FullMethod: "/grpc.ProfilesService/GetProfileIDByCredentials",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProfileServiceServer).GetProfileIDByCredentials(ctx, req.(*Credentials))
+		return srv.(ProfilesServiceServer).GetProfileIDByCredentials(ctx, req.(*Credentials))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _ProfileService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.ProfileService",
-	HandlerType: (*ProfileServiceServer)(nil),
+var _ProfilesService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.ProfilesService",
+	HandlerType: (*ProfilesServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "IncProfileScore",
-			Handler:    _ProfileService_IncProfileScore_Handler,
+			Handler:    _ProfilesService_IncProfileScore_Handler,
 		},
 		{
 			MethodName: "GetProfileIDByCredentials",
-			Handler:    _ProfileService_GetProfileIDByCredentials_Handler,
+			Handler:    _ProfilesService_GetProfileIDByCredentials_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -7,6 +7,7 @@ import (
 
 var (
 	HttpPort = args.GetString("http_port", "80")
+	GrpcPort = args.GetString("grpc_port", "3000")
 
 	StorageHost     = env.GetVar("PROFILE_SERVICE_DB_HOST", "127.0.0.1")
 	StoragePort     = env.GetVar("PROFILE_SERVICE_DB_PORT", "5432")

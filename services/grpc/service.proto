@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package grpc;
 
-service ProfileService {
+service ProfilesService {
     rpc IncProfileScore(ProfileID) returns(Void) {}
     rpc GetProfileIDByCredentials(Credentials) returns(ProfileID) {}
 }

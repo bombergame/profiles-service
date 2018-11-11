@@ -50,11 +50,11 @@ func NewService(c *Config) *Service {
 }
 
 func (srv *Service) Run() error {
-	srv.logger.Info("rest service address: " + srv.server.Addr)
+	srv.logger.Info("http service running on: " + srv.server.Addr)
 	return srv.server.ListenAndServe()
 }
 
 func (srv *Service) Shutdown() error {
-	srv.logger.Info("rest service shutdown initialized")
+	srv.logger.Info("http service shutdown initialized")
 	return srv.server.Shutdown(context.TODO())
 }
