@@ -1,12 +1,7 @@
 package rest
 
 import (
-	"errors"
-	"github.com/bombergame/common/errs"
-	"github.com/bombergame/profiles-service/repositories"
-	"github.com/gorilla/mux"
 	"net/http"
-	"strconv"
 )
 
 func (srv *Service) createProfile(w http.ResponseWriter, r *http.Request) {
@@ -134,41 +129,4 @@ func (srv *Service) deleteProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	srv.writeOk(w)
-}
-
-func (srv *Service) readProfileID(r *http.Request) (int64, error) {
-	v, ok := mux.Vars(r)["profile_id"]
-	if !ok {
-		err := errors.New("profile_id cannot be parsed")
-		return 0, errs.NewServiceError(err)
-	}
-
-	iv64, err := strconv.ParseInt(v, 10, 64)
-	if err != nil {
-		return 0, errs.NewServiceError(err)
-	}
-
-	return iv64, nil
-}
-
-func (srv *Service) readAuthProfileID(r *http.Request) (int64, error) {
-	v, err := srv.readHeaderString(r, "X-Profile-ID")
-	if err != nil {
-		return 0, err
-	}
-
-	iv64, err := strconv.ParseInt(v, 10, 64)
-	if err != nil {
-		return 0, errs.NewServiceError(err)
-	}
-
-	return iv64, nil
-}
-
-func (srv *Service) readPageIndex(r *http.Request) (int32, error) {
-	return srv.readQueryInt32(r, "page_index", 1)
-}
-
-func (srv *Service) readPageSize(r *http.Request) (int32, error) {
-	return srv.readQueryInt32(r, "page_size", repositories.DefaultPageSize)
 }

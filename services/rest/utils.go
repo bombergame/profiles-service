@@ -5,6 +5,8 @@ import (
 	"errors"
 	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/errs"
+	"github.com/bombergame/profiles-service/repositories"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
@@ -112,4 +114,63 @@ func (srv *Service) writeJSON(w http.ResponseWriter, status int, v interface{}) 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(v)
+}
+
+func (srv *Service) readProfileID(r *http.Request) (int64, error) {
+	v, ok := mux.Vars(r)["profile_id"]
+	if !ok {
+		err := errors.New("profile_id cannot be parsed")
+		return 0, errs.NewServiceError(err)
+	}
+
+	iv64, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		return 0, errs.NewServiceError(err)
+	}
+
+	return iv64, nil
+}
+
+func (srv *Service) readAuthProfileID(r *http.Request) (int64, error) {
+	v, err := srv.readHeaderString(r, "X-Profile-ID")
+	if err != nil {
+		return 0, err
+	}
+
+	iv64, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		return 0, errs.NewServiceError(err)
+	}
+
+	return iv64, nil
+}
+
+func (srv *Service) readPageIndex(r *http.Request) (int32, error) {
+	return srv.readQueryInt32(r, "page_index", 1)
+}
+
+func (srv *Service) readPageSize(r *http.Request) (int32, error) {
+	return srv.readQueryInt32(r, "page_size", repositories.DefaultPageSize)
+}
+
+func (srv *Service) readUserAgent(r *http.Request) (string, error) {
+	return srv.readHeaderString(r, "User-Agent")
+}
+
+func (srv *Service) readAuthToken(r *http.Request) (string, error) {
+	bearer, err := srv.readHeaderString(r, "Authorization")
+	if err != nil {
+		return consts.EmptyString, err
+	}
+
+	n := len("Bearer ")
+	if len(bearer) <= n {
+		return consts.EmptyString, errs.NewInvalidFormatError("wrong authorization token")
+	}
+
+	return bearer[n:], nil
+}
+
+func (srv *Service) setAuthProfileID(r *http.Request, id int64) {
+	r.Header.Set("X-Profile-ID", strconv.FormatInt(id, 10))
 }

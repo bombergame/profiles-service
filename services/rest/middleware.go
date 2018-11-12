@@ -2,6 +2,7 @@ package rest
 
 import (
 	"fmt"
+	authgrpc "github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"net/http"
 )
 
@@ -35,7 +36,30 @@ func (srv *Service) withLogs(h http.Handler) http.Handler {
 func (srv *Service) withAuthRestrict(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			//TODO
+			userAgent, err := srv.readUserAgent(r)
+			if err != nil {
+				srv.writeErrorWithBody(w, err)
+				return
+			}
+
+			authToken, err := srv.readAuthToken(r)
+			if err != nil {
+				srv.writeErrorWithBody(w, err)
+				return
+			}
+
+			id, err := srv.config.AuthGrpc.GetProfileID(
+				&authgrpc.AuthInfo{
+					UserAgent: userAgent,
+					Token:     authToken,
+				},
+			)
+			if err != nil {
+				srv.writeErrorWithBody(w, err)
+				return
+			}
+
+			srv.setAuthProfileID(r, id.Value)
 			h.ServeHTTP(w, r)
 		},
 	)

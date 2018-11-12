@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"github.com/bombergame/common/logs"
+	authgrpc "github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"github.com/bombergame/profiles-service/config"
 	"github.com/bombergame/profiles-service/repositories"
 	"github.com/gorilla/handlers"
@@ -17,6 +18,7 @@ type Service struct {
 
 type Config struct {
 	Logger            *logs.Logger
+	AuthGrpc          *authgrpc.Client
 	ProfileRepository repositories.ProfileRepository
 }
 

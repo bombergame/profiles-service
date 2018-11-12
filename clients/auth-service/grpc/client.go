@@ -1,9 +1,12 @@
 package grpc
 
 import (
+	"context"
+	"github.com/bombergame/common/errs"
 	"github.com/bombergame/common/logs"
 	"github.com/bombergame/profiles-service/config"
 	"google.golang.org/grpc"
+	"strings"
 )
 
 type Client struct {
@@ -41,13 +44,30 @@ func (c *Client) Disconnect() error {
 }
 
 func (c *Client) GetProfileID(authInfo *AuthInfo) (*ProfileID, error) {
-	return nil, nil //TODO
+	id, err := c.client.GetProfileID(context.TODO(), authInfo)
+	if err != nil {
+		return nil, c.wrapError(err)
+	}
+	return id, nil
 }
 
 func (c *Client) DeleteAllSessions(profileID *ProfileID) error {
-	return nil //TODO
+	_, err := c.client.DeleteAllSessions(context.TODO(), profileID)
+	if err != nil {
+		return c.wrapError(err)
+	}
+	return nil
 }
 
 func (c *Client) wrapError(err error) error {
-	return nil //TODO
+	errMsg := err.Error()
+
+	if strings.Contains(errMsg, errs.InvalidFormatErrorMessagePrefix) {
+		return errs.NewNotAuthorizedError()
+	}
+	if strings.Contains(errMsg, errs.NotAuthorizedErrorMessage) {
+		return errs.NewNotAuthorizedError()
+	}
+
+	return errs.NewServiceError(err)
 }
