@@ -10,7 +10,7 @@ func (srv *Service) withRecover(h http.Handler) http.Handler {
 		func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if r := recover(); r != nil {
-					srv.logger.Error(r)
+					srv.config.Logger.Error(r)
 					srv.writeError(w, http.StatusInternalServerError)
 				}
 			}()
@@ -27,7 +27,7 @@ func (srv *Service) withLogs(h http.Handler) http.Handler {
 			}
 			h.ServeHTTP(wr, r)
 
-			srv.logger.Info(fmt.Sprintf("%s %s %d", r.Method, r.URL.Path, wr.status))
+			srv.config.Logger.Info(fmt.Sprintf("%s %s %d", r.Method, r.URL.Path, wr.status))
 		},
 	)
 }

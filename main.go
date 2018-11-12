@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/bombergame/common/logs"
+	authgrpc "github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"github.com/bombergame/profiles-service/repositories/postgres"
 	"github.com/bombergame/profiles-service/services/grpc"
 	"github.com/bombergame/profiles-service/services/rest"
@@ -20,19 +21,31 @@ func main() {
 		return
 	}
 
-	r := postgres.NewProfileRepository(conn)
+	profileRepository := postgres.NewProfileRepository(conn)
+
+	authGrpc := authgrpc.NewClient(
+		&authgrpc.Config{
+			Logger: logger,
+		},
+	)
+
+	defer authGrpc.Disconnect()
+	if err := authGrpc.Connect(); err != nil {
+		logger.Fatal(err)
+		return
+	}
 
 	restSrv := rest.NewService(
 		&rest.Config{
-			Logger:     logger,
-			Repository: r,
+			Logger:            logger,
+			ProfileRepository: profileRepository,
 		},
 	)
 
 	grpcSrv := grpc.NewService(
 		&grpc.Config{
 			Logger:     logger,
-			Repository: r,
+			Repository: profileRepository,
 		},
 	)
 

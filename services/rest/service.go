@@ -11,21 +11,18 @@ import (
 )
 
 type Service struct {
+	config *Config
 	server http.Server
-	logger *logs.Logger
-	pfRepo repositories.ProfileRepository
 }
 
 type Config struct {
-	Logger     *logs.Logger
-	Repository repositories.ProfileRepository
+	Logger            *logs.Logger
+	ProfileRepository repositories.ProfileRepository
 }
 
 func NewService(c *Config) *Service {
 	srv := &Service{
-		logger: c.Logger,
-		pfRepo: c.Repository,
-
+		config: c,
 		server: http.Server{
 			Addr: ":" + config.HttpPort,
 		},
@@ -50,11 +47,11 @@ func NewService(c *Config) *Service {
 }
 
 func (srv *Service) Run() error {
-	srv.logger.Info("http service running on: " + srv.server.Addr)
+	srv.config.Logger.Info("http service running on: " + srv.server.Addr)
 	return srv.server.ListenAndServe()
 }
 
 func (srv *Service) Shutdown() error {
-	srv.logger.Info("http service shutdown initialized")
+	srv.config.Logger.Info("http service shutdown initialized")
 	return srv.server.Shutdown(context.TODO())
 }

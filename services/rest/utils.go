@@ -2,8 +2,9 @@ package rest
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/errs"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
@@ -26,29 +27,15 @@ func (w *LoggingResponseWriter) WriteHeader(status int) {
 	w.writer.WriteHeader(status)
 }
 
-func (srv *Service) readPathInt64(r *http.Request, name string) (int64, error) {
-	v, ok := mux.Vars(r)[name]
-	if !ok {
-		panic("path parameter not parsed")
-	}
-
-	iv64, err := strconv.ParseInt(v, 10, 64)
-	if err != nil {
-		panic(err)
-	}
-
-	return iv64, nil
-}
-
 func (srv *Service) readQueryInt32(r *http.Request, name string, defaultValue int32) (int32, error) {
 	v := r.URL.Query().Get(name)
-	if v == "" {
+	if v == consts.EmptyString {
 		return defaultValue, nil
 	}
 
 	iv64, err := strconv.ParseInt(v, 10, 32)
 	if err != nil {
-		return 0, errs.NewInvalidFormatError("query parameter type mismatch")
+		return 0, errs.NewInvalidFormatError(name + " type mismatch")
 	}
 
 	return int32(iv64), nil
@@ -56,24 +43,11 @@ func (srv *Service) readQueryInt32(r *http.Request, name string, defaultValue in
 
 func (srv *Service) readHeaderString(r *http.Request, name string) (string, error) {
 	v := r.Header.Get(name)
-	if v == "" {
-		panic("required header not set")
+	if v == consts.EmptyString {
+		err := errors.New(name + " header not set")
+		return consts.EmptyString, errs.NewServiceError(err)
 	}
 	return v, nil
-}
-
-func (srv *Service) readHeaderInt64(r *http.Request, name string) (int64, error) {
-	v, err := srv.readHeaderString(r, name)
-	if err != nil {
-		return 0, err
-	}
-
-	iv64, err := strconv.ParseInt(v, 10, 64)
-	if err != nil {
-		panic(err)
-	}
-
-	return iv64, nil
 }
 
 func (srv *Service) readRequestBody(v interface{}, r *http.Request) error {
@@ -90,7 +64,6 @@ func (srv *Service) writeOk(w http.ResponseWriter) {
 
 func (srv *Service) writeOkWithBody(w http.ResponseWriter, v interface{}) {
 	srv.writeJSON(w, http.StatusOK, v)
-	srv.writeOk(w)
 }
 
 func (srv *Service) writeError(w http.ResponseWriter, status int) {
@@ -117,11 +90,11 @@ func (srv *Service) writeErrorWithBody(w http.ResponseWriter, err error) {
 		status = http.StatusNotFound
 
 	case *errs.ServiceError:
-		srv.logger.Error(srvErr.InnerError())
+		srv.config.Logger.Error(srvErr.InnerError())
 		status = http.StatusInternalServerError
 
 	default:
-		srv.logger.Error(err.Error())
+		srv.config.Logger.Error(err.Error())
 		srv.writeText(w, http.StatusInternalServerError, errs.ServiceErrorMessage)
 		return
 	}
