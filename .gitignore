@@ -1,2 +1,8 @@
 ### GoLand ###
 /.idea/
+
+### build ###
+/_build/
+
+### test ###
+/_test/

@@ -3,6 +3,8 @@ all: build
 prepare:
 	easyjson -all ./services/rest/models.go
 	protoc -I services/grpc/ services/grpc/service.proto --go_out=plugins=grpc:services/grpc
+	protoc -I clients/auth-service/grpc/ clients/auth-service/grpc/service.proto \
+		--go_out=plugins=grpc:clients/auth-service/grpc
 
 build:
 	go build -v -o ./_build/service .
@@ -19,3 +21,4 @@ clean:
 clear: clean
 	rm -f ./services/rest/models_easyjson.go
 	rm -f ./services/grpc/service.pb.go
+	rm -f ./clients/auth-service/grpc/service.pb.go

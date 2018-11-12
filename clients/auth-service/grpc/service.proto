@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package grpc;
+
+service AuthService {
+    rpc GetProfileID(AuthInfo) returns(ProfileID) {}
+    rpc DeleteAllSessions(ProfileID) returns(Void) {}
+}
+
+message Void {}
+
+message AuthInfo {
+    string token = 1;
+    string userAgent = 2;
+}
+
+message ProfileID {
+    int64 value = 1;
+}
