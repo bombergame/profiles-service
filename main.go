@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/bombergame/common/logs"
-	authgrpc "github.com/bombergame/profiles-service/clients/auth-service/grpc"
+	"github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"github.com/bombergame/profiles-service/repositories/postgres"
 	"github.com/bombergame/profiles-service/services/grpc"
 	"github.com/bombergame/profiles-service/services/rest"
@@ -43,8 +43,8 @@ func main() {
 		},
 	)
 
-	grpcSrv := grpc.NewService(
-		&grpc.Config{
+	grpcSrv := profilesgrpc.NewService(
+		&profilesgrpc.Config{
 			Logger:     logger,
 			Repository: profileRepository,
 		},

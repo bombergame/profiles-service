@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package grpc;
+package authgrpc;
 
 service AuthService {
     rpc GetProfileID(AuthInfo) returns(ProfileID) {}

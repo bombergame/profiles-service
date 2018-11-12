@@ -2,7 +2,7 @@ package rest
 
 import (
 	"fmt"
-	authgrpc "github.com/bombergame/profiles-service/clients/auth-service/grpc"
+	"github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"net/http"
 )
 
