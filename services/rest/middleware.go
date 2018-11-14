@@ -28,7 +28,7 @@ func (srv *Service) withLogs(h http.Handler) http.Handler {
 			}
 			h.ServeHTTP(wr, r)
 
-			srv.config.Logger.Info(fmt.Sprintf("%s %s %d", r.Method, r.URL.Path, wr.status))
+			srv.config.Logger.Info(fmt.Sprintf("%s %s %d", r.Method, r.RequestURI, wr.status))
 		},
 	)
 }
