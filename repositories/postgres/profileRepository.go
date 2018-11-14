@@ -84,7 +84,7 @@ func (r *ProfileRepository) GetAllPaginated(pageIndex, pageSize int32) ([]domain
 		return nil, errs.NewServiceError(err)
 	}
 
-	rows, err := statement.Query(pageIndex-1, pageSize)
+	rows, err := statement.Query((pageIndex-1)*pageSize, pageSize)
 	if err != nil {
 		return nil, errs.NewServiceError(err)
 	}
