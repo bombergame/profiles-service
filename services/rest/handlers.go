@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"net/http"
 )
 
@@ -100,6 +101,19 @@ func (srv *Service) updateProfile(w http.ResponseWriter, r *http.Request) {
 	if err := srv.config.ProfileRepository.Update(profileID, pd.Prepare()); err != nil {
 		srv.writeErrorWithBody(w, err)
 		return
+	}
+
+	if pd.Password != "" {
+		go func() {
+			err := srv.config.AuthGrpc.DeleteAllSessions(
+				&authgrpc.ProfileID{
+					Value: profileID,
+				},
+			)
+			if err != nil {
+				srv.config.Logger.Error(err)
+			}
+		}()
 	}
 
 	srv.writeOk(w)
