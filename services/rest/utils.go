@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/errs"
+	"github.com/bombergame/profiles-service/clients/auth-service/grpc"
 	"github.com/bombergame/profiles-service/repositories"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -173,4 +174,15 @@ func (srv *Service) readAuthToken(r *http.Request) (string, error) {
 
 func (srv *Service) setAuthProfileID(r *http.Request, id int64) {
 	r.Header.Set("X-Profile-ID", strconv.FormatInt(id, 10))
+}
+
+func (srv *Service) deleteSessions(profileID int64) {
+	err := srv.config.AuthGrpc.DeleteAllSessions(
+		&authgrpc.ProfileID{
+			Value: profileID,
+		},
+	)
+	if err != nil {
+		srv.config.Logger.Error(err)
+	}
 }
