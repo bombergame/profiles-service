@@ -80,6 +80,7 @@ func main() {
 			ServiceComponents: grpc.ServiceComponents{
 				Logger: logger,
 			},
+			ProfileRepository: profileRepository,
 		},
 	)
 
