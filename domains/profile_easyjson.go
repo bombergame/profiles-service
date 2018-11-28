@@ -17,7 +17,75 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(in *jlexer.Lexer, out *Profile) {
+func easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(in *jlexer.Lexer, out *Profiles) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		in.Skip()
+		*out = nil
+	} else {
+		in.Delim('[')
+		if *out == nil {
+			if !in.IsDelim(']') {
+				*out = make(Profiles, 0, 1)
+			} else {
+				*out = Profiles{}
+			}
+		} else {
+			*out = (*out)[:0]
+		}
+		for !in.IsDelim(']') {
+			var v1 Profile
+			if data := in.Raw(); in.Ok() {
+				in.AddError((v1).UnmarshalJSON(data))
+			}
+			*out = append(*out, v1)
+			in.WantComma()
+		}
+		in.Delim(']')
+	}
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(out *jwriter.Writer, in Profiles) {
+	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v2, v3 := range in {
+			if v2 > 0 {
+				out.RawByte(',')
+			}
+			out.Raw((v3).MarshalJSON())
+		}
+		out.RawByte(']')
+	}
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Profiles) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Profiles) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Profiles) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Profiles) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(l, v)
+}
+func easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains1(in *jlexer.Lexer, out *Profile) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -56,7 +124,7 @@ func easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(in *jlexer.
 		in.Consumed()
 	}
 }
-func easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(out *jwriter.Writer, in Profile) {
+func easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains1(out *jwriter.Writer, in Profile) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -116,23 +184,23 @@ func easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(out *jwrite
 // MarshalJSON supports json.Marshaler interface
 func (v Profile) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(&w, v)
+	easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Profile) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains(w, v)
+	easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Profile) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(&r, v)
+	easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Profile) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains(l, v)
+	easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains1(l, v)
 }
