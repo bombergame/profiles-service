@@ -3,17 +3,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d2b74b23d4e5e9afab9155c3a2924d517325a8a23f9440ced9bd9aff9b083083"
+  digest = "1:84ebe0deb5dbe72a164e8ef4c8e27e78c22ed3dcc60cdae79c77d9eee27f0c00"
   name = "github.com/bombergame/common"
   packages = [
     "args",
+    "auth",
     "consts",
     "env",
     "errs",
     "logs",
+    "rest",
   ]
   pruneopts = "UT"
-  revision = "0452be32602e4c5e85263ca4473eeaea31f4304c"
+  revision = "9eedf4a0e52f2f35808c6d9ab6a978c0790fde9a"
 
 [[projects]]
   digest = "1:4c0989ca0bcd10799064318923b9bc2db6b4d6338dd75f3f2d86c3511aaaf5cf"
@@ -95,11 +97,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  digest = "1:38f553aff0273ad6f367cb0a0f8b6eecbaef8dc6cb8b50e57b6a81c1d5b1e332"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = "UT"
-  revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
+  revision = "eb0de9b17e854e9b1ccd9963efafc79862359959"
 
 [[projects]]
   branch = "master"
@@ -115,18 +117,18 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "03003ca0c849e57b6ea29a4bab8d3cb6e4d568fe"
+  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
-  digest = "1:6a875550c3b582f6c2d7e2ce44aba792511f00016d7c46b0a4fb26f730ef3058"
+  digest = "1:0c7cb58af944f9690af91474a75371eecfe54c1ce3771a8dc08924430ee785d3"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
+  revision = "4ed8d59d0b35e1e29334a206d1b3f38b1e5dfb31"
 
 [[projects]]
   digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
@@ -157,7 +159,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "b5d43981345bdb2c233eb4bf3277847b48c6fdc6"
+  revision = "31ac5d88444a9e7ad18077db9a165d793ad06a2e"
 
 [[projects]]
   digest = "1:c3ad9841823db6da420a5625b367913b4ff54bbe60e8e3c98bd20e243e62e2d2"
@@ -203,13 +205,11 @@
     "github.com/bombergame/common/env",
     "github.com/bombergame/common/errs",
     "github.com/bombergame/common/logs",
+    "github.com/bombergame/common/rest",
     "github.com/golang/protobuf/proto",
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
     "github.com/lib/pq",
-    "github.com/mailru/easyjson",
-    "github.com/mailru/easyjson/jlexer",
-    "github.com/mailru/easyjson/jwriter",
     "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"

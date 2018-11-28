@@ -1,9 +1,8 @@
 package rest
 
 import (
-	"context"
-	"github.com/bombergame/common/logs"
-	"github.com/bombergame/profiles-service/clients/auth-service/grpc"
+	"github.com/bombergame/common/consts"
+	"github.com/bombergame/common/rest"
 	"github.com/bombergame/profiles-service/config"
 	"github.com/bombergame/profiles-service/repositories"
 	"github.com/gorilla/handlers"
@@ -12,22 +11,29 @@ import (
 )
 
 type Service struct {
-	config *Config
-	server http.Server
+	rest.Service
+	config     ServiceConfig
+	components ServiceComponents
 }
 
-type Config struct {
-	Logger            *logs.Logger
-	AuthGrpc          *authgrpc.Client
+type ServiceConfig struct {
+	rest.Config
+}
+
+type ServiceComponents struct {
+	rest.Components
 	ProfileRepository repositories.ProfileRepository
 }
 
-func NewService(c *Config) *Service {
+func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
+	cf.Host, cf.Port = consts.EmptyString, config.HttpPort
+
 	srv := &Service{
-		config: c,
-		server: http.Server{
-			Addr: ":" + config.HttpPort,
-		},
+		config:     cf,
+		components: cp,
+		Service: *rest.NewService(
+			cf.Config, cp.Components,
+		),
 	}
 
 	mx := mux.NewRouter()
@@ -43,17 +49,7 @@ func NewService(c *Config) *Service {
 		http.MethodDelete: srv.withAuthRestrict(http.HandlerFunc(srv.deleteProfile)),
 	})
 
-	srv.server.Handler = srv.withLogs(srv.withRecover(mx))
+	srv.SetHandler(srv.withLogs(srv.withRecover(mx)))
 
 	return srv
-}
-
-func (srv *Service) Run() error {
-	srv.config.Logger.Info("http service running on: " + srv.server.Addr)
-	return srv.server.ListenAndServe()
-}
-
-func (srv *Service) Shutdown() error {
-	srv.config.Logger.Info("http service shutdown initialized")
-	return srv.server.Shutdown(context.TODO())
 }

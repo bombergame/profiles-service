@@ -36,7 +36,7 @@ func main() {
 	}
 
 	restSrv := rest.NewService(
-		&rest.Config{
+		&rest.ServiceConfig{
 			Logger:            logger,
 			AuthGrpc:          authGrpc,
 			ProfileRepository: profileRepository,

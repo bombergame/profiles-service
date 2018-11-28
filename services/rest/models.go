@@ -1,24 +1,11 @@
 package rest
 
+//go:generate easyjson
+
 import (
 	"github.com/bombergame/common/errs"
 	"github.com/bombergame/profiles-service/domains"
 )
-
-// easyjson:json
-type Profile struct {
-	ID       int64  `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Score    int32  `json:"score"`
-}
-
-func (p *Profile) Prepare(pf domains.Profile) {
-	p.ID = pf.ID
-	p.Username = pf.Username
-	p.Email = pf.Email
-	p.Score = pf.Score
-}
 
 // easyjson:json
 type NewProfileData struct {
@@ -68,15 +55,4 @@ func (p ProfileDataUpdate) Prepare() domains.Profile {
 		Password: p.Password,
 		Email:    p.Email,
 	}
-}
-
-// easyjson:json
-type Profiles []Profile
-
-func (p *Profiles) Prepare(pf []domains.Profile) {
-	sl := make([]Profile, len(pf))
-	for i := 0; i < len(pf); i++ {
-		sl[i].Prepare(pf[i])
-	}
-	*p = Profiles(sl)
 }
