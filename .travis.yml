@@ -12,7 +12,7 @@ jobs:
 
   - stage: run unit tests
     script:
-    - make test_units
+    - make run_unit_tests
     after_success:
     - ${GOPATH}/bin/goveralls -coverprofile=./coverage.out -service=travis-ci
     after_script:
