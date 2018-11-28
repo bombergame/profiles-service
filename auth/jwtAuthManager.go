@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/bombergame/auth-service/config"
 	"github.com/bombergame/common/auth"
 	"github.com/bombergame/common/auth/jwt"
 	"github.com/bombergame/common/errs"
@@ -9,6 +10,12 @@ import (
 
 type JwtAuthManager struct {
 	tokenManager *jwt.TokenManager
+}
+
+func NewJwtAuthManager() *JwtAuthManager {
+	return &JwtAuthManager{
+		tokenManager: jwt.NewTokenManager(config.TokenSignKey),
+	}
 }
 
 func (m *JwtAuthManager) GetProfileInfo(authToken string, userAgent string) (*auth.ProfileInfo, error) {

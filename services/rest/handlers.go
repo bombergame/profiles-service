@@ -1,4 +1,4 @@
-package rest
+package profilesrest
 
 import (
 	"github.com/bombergame/common/consts"

@@ -1,4 +1,4 @@
-package rest
+package profilesrest
 
 import (
 	"github.com/bombergame/auth-service/services/grpc"
@@ -24,7 +24,7 @@ type ServiceConfig struct {
 type ServiceComponents struct {
 	rest.Components
 	ProfileRepository repositories.ProfileRepository
-	AuthClient        authgrpc.Client
+	AuthClient        *authgrpc.Client
 }
 
 func NewService(cf ServiceConfig, cp ServiceComponents) *Service {

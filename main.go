@@ -1,8 +1,13 @@
 package main
 
 import (
+	"github.com/bombergame/auth-service/services/grpc"
+	"github.com/bombergame/common/consts"
+	"github.com/bombergame/common/grpc"
 	"github.com/bombergame/common/logs"
-	"github.com/bombergame/profiles-service/clients/auth-service/grpc"
+	"github.com/bombergame/common/rest"
+	"github.com/bombergame/profiles-service/auth"
+	"github.com/bombergame/profiles-service/config"
 	"github.com/bombergame/profiles-service/repositories/postgres"
 	"github.com/bombergame/profiles-service/services/grpc"
 	"github.com/bombergame/profiles-service/services/rest"
@@ -14,39 +19,68 @@ func main() {
 	logger := logs.NewLogger()
 
 	conn := postgres.NewConnection()
-
-	defer conn.Close()
 	if err := conn.Open(); err != nil {
 		logger.Fatal(err)
 		return
 	}
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			logger.Fatal(err)
+		}
+	}()
 
 	profileRepository := postgres.NewProfileRepository(conn)
 
-	authGrpc := authgrpc.NewClient(
-		&authgrpc.Config{
-			Logger: logger,
+	authManager := auth.NewJwtAuthManager()
+
+	authClient := authgrpc.NewClient(
+		authgrpc.ClientConfig{
+			ClientConfig: grpc.ClientConfig{
+				ServiceHost: consts.EmptyString,
+				ServicePort: config.GrpcPort,
+			},
+		},
+		authgrpc.ClientComponents{
+			ClientComponents: grpc.ClientComponents{
+				Logger: logger,
+			},
 		},
 	)
 
-	defer authGrpc.Disconnect()
-	if err := authGrpc.Connect(); err != nil {
+	if err := authClient.Connect(); err != nil {
 		logger.Fatal(err)
 		return
 	}
+	defer func() {
+		err := authClient.Disconnect()
+		if err != nil {
+			logger.Fatal(err)
+		}
+	}()
 
-	restSrv := rest.NewService(
-		&rest.ServiceConfig{
-			Logger:            logger,
-			AuthGrpc:          authGrpc,
+	restSrv := profilesrest.NewService(
+		profilesrest.ServiceConfig{
+			Config: rest.Config{},
+		},
+		profilesrest.ServiceComponents{
+			Components: rest.Components{
+				Logger:      logger,
+				AuthManager: authManager,
+			},
 			ProfileRepository: profileRepository,
+			AuthClient:        authClient,
 		},
 	)
 
 	grpcSrv := profilesgrpc.NewService(
-		&profilesgrpc.Config{
-			Logger:     logger,
-			Repository: profileRepository,
+		profilesgrpc.ServiceConfig{
+			ServiceConfig: grpc.ServiceConfig{},
+		},
+		profilesgrpc.ServiceComponents{
+			ServiceComponents: grpc.ServiceComponents{
+				Logger: logger,
+			},
 		},
 	)
 
