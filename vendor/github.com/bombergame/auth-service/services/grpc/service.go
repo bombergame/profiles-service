@@ -1,11 +1,11 @@
-package profilesgrpc
+package authgrpc
 
 import (
 	"context"
+	"github.com/bombergame/auth-service/config"
+	"github.com/bombergame/auth-service/repositories"
 	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/grpc"
-	"github.com/bombergame/profiles-service/config"
-	"github.com/bombergame/profiles-service/repositories"
 )
 
 type Service struct {
@@ -20,7 +20,7 @@ type ServiceConfig struct {
 
 type ServiceComponents struct {
 	grpc.ServiceComponents
-	ProfileRepository repositories.ProfileRepository
+	SessionRepository repositories.SessionRepository
 }
 
 func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
@@ -35,24 +35,15 @@ func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
 		),
 	}
 
-	RegisterProfilesServiceServer(srv.Server, srv)
+	RegisterAuthServiceServer(srv.Server, srv)
 
 	return srv
 }
 
-func (srv *Service) IncProfileScore(ctx context.Context, req *ProfileID) (*Void, error) {
-	return &Void{}, nil //TODO
-}
-
-func (srv *Service) GetProfileIDByCredentials(ctx context.Context, req *Credentials) (*ProfileID, error) {
-	id, err := srv.components.ProfileRepository.FindIDByCredentials(req.Username, req.Password)
+func (srv *Service) DeleteAllSessions(ctx context.Context, id *ProfileID) (*Void, error) {
+	err := srv.components.SessionRepository.DeleteAllSessions(id.Value)
 	if err != nil {
 		return nil, err
 	}
-
-	profileID := &ProfileID{
-		Value: *id,
-	}
-
-	return profileID, nil
+	return &Void{}, err
 }

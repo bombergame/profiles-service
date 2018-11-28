@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package authgrpc;
+
+service AuthService {
+    rpc DeleteAllSessions(ProfileID) returns(Void) {}
+}
+
+message ProfileID {
+    int64 value = 1;
+}
+
+message Void {}

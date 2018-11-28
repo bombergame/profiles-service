@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"github.com/bombergame/auth-service/services/grpc"
 	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/rest"
 	"github.com/bombergame/profiles-service/config"
@@ -23,6 +24,7 @@ type ServiceConfig struct {
 type ServiceComponents struct {
 	rest.Components
 	ProfileRepository repositories.ProfileRepository
+	AuthClient        authgrpc.Client
 }
 
 func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
@@ -45,11 +47,11 @@ func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
 
 	mx.Handle("/{profile_id:[0-9]+}", handlers.MethodHandler{
 		http.MethodGet:    http.HandlerFunc(srv.getProfile),
-		http.MethodPatch:  srv.withAuthRestrict(http.HandlerFunc(srv.updateProfile)),
-		http.MethodDelete: srv.withAuthRestrict(http.HandlerFunc(srv.deleteProfile)),
+		http.MethodPatch:  srv.WithAuth(http.HandlerFunc(srv.updateProfile)),
+		http.MethodDelete: srv.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
 
-	srv.SetHandler(srv.withLogs(srv.withRecover(mx)))
+	srv.SetHandler(srv.WithLogs(srv.WithRecover(mx)))
 
 	return srv
 }

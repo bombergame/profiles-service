@@ -1,138 +1,136 @@
 package rest
 
 import (
+	"github.com/bombergame/common/consts"
+	"github.com/bombergame/common/errs"
 	"net/http"
 )
 
 func (srv *Service) createProfile(w http.ResponseWriter, r *http.Request) {
 	var pd NewProfileData
-	if err := srv.readRequestBody(&pd, r); err != nil {
-		srv.writeErrorWithBody(w, err)
+	if err := srv.ReadRequestBody(&pd, r); err != nil {
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	if err := pd.Validate(); err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	if err := srv.config.ProfileRepository.Create(pd.Prepare()); err != nil {
-		srv.writeErrorWithBody(w, err)
+	if err := srv.components.ProfileRepository.Create(pd.Prepare()); err != nil {
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	srv.writeOk(w)
+	srv.WriteOk(w)
 }
 
 func (srv *Service) getProfiles(w http.ResponseWriter, r *http.Request) {
 	pageIndex, err := srv.readPageIndex(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	pageSize, err := srv.readPageSize(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	pf, err := srv.config.ProfileRepository.GetAllPaginated(pageIndex, pageSize)
+	_, err = srv.components.ProfileRepository.GetAllPaginated(pageIndex, pageSize)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	var pAll Profiles
-	pAll.Prepare(pf)
-
-	srv.writeOkWithBody(w, pAll)
+	//srv.WriteOkWithBody(w, list) //TODO
 }
 
 func (srv *Service) getProfile(w http.ResponseWriter, r *http.Request) {
 	id, err := srv.readProfileID(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	p, err := srv.config.ProfileRepository.FindByID(id)
+	p, err := srv.components.ProfileRepository.FindByID(id)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	var pf Profile
-	pf.Prepare(*p)
-
-	srv.writeOkWithBody(w, pf)
+	srv.WriteOkWithBody(w, p)
 }
 
 func (srv *Service) updateProfile(w http.ResponseWriter, r *http.Request) {
-	authID, err := srv.readAuthProfileID(r)
+	authID, err := srv.ReadAuthProfileID(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	profileID, err := srv.readProfileID(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	if authID != profileID {
-		srv.writeError(w, http.StatusForbidden)
+		err := errs.NewAccessDeniedError()
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	var pd ProfileDataUpdate
-	if err := srv.readRequestBody(&pd, r); err != nil {
-		srv.writeErrorWithBody(w, err)
+	if err := srv.ReadRequestBody(&pd, r); err != nil {
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	if err := pd.Validate(); err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	if err := srv.config.ProfileRepository.Update(profileID, pd.Prepare()); err != nil {
-		srv.writeErrorWithBody(w, err)
+	if err := srv.components.ProfileRepository.Update(profileID, pd.Prepare()); err != nil {
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	if pd.Password != "" {
+	if pd.Password != consts.EmptyString {
 		go srv.deleteSessions(profileID)
 	}
 
-	srv.writeOk(w)
+	srv.WriteOk(w)
 }
 
 func (srv *Service) deleteProfile(w http.ResponseWriter, r *http.Request) {
-	authID, err := srv.readAuthProfileID(r)
+	authID, err := srv.ReadAuthProfileID(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	profileID, err := srv.readProfileID(r)
 	if err != nil {
-		srv.writeErrorWithBody(w, err)
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	if authID != profileID {
-		srv.writeError(w, http.StatusForbidden)
+		err := errs.NewAccessDeniedError()
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	if err := srv.config.ProfileRepository.Delete(profileID); err != nil {
-		srv.writeErrorWithBody(w, err)
+	if err := srv.components.ProfileRepository.Delete(profileID); err != nil {
+		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
 	go srv.deleteSessions(profileID)
 
-	srv.writeOk(w)
+	srv.WriteOk(w)
 }

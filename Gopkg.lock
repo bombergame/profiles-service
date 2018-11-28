@@ -3,7 +3,20 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:84ebe0deb5dbe72a164e8ef4c8e27e78c22ed3dcc60cdae79c77d9eee27f0c00"
+  digest = "1:ea366bb9f641210ad6295d0ec1cf1d05339bb5660aa722e43ad896ef19189ecf"
+  name = "github.com/bombergame/auth-service"
+  packages = [
+    "config",
+    "domains",
+    "repositories",
+    "services/grpc",
+  ]
+  pruneopts = "UT"
+  revision = "54c3123bff9fc2c46aff99cc69b579dfcf4c523d"
+
+[[projects]]
+  branch = "master"
+  digest = "1:51444b2daee7b9f535562343931d9825f06eaf4e194d121b8ea1959947d1dc64"
   name = "github.com/bombergame/common"
   packages = [
     "args",
@@ -11,6 +24,7 @@
     "consts",
     "env",
     "errs",
+    "grpc",
     "logs",
     "rest",
   ]
@@ -200,16 +214,21 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/bombergame/auth-service/services/grpc",
     "github.com/bombergame/common/args",
     "github.com/bombergame/common/consts",
     "github.com/bombergame/common/env",
     "github.com/bombergame/common/errs",
+    "github.com/bombergame/common/grpc",
     "github.com/bombergame/common/logs",
     "github.com/bombergame/common/rest",
     "github.com/golang/protobuf/proto",
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
     "github.com/lib/pq",
+    "github.com/mailru/easyjson",
+    "github.com/mailru/easyjson/jlexer",
+    "github.com/mailru/easyjson/jwriter",
     "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"
