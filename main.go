@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/bombergame/auth-service/services/grpc"
-	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/grpc"
 	"github.com/bombergame/common/logs"
 	"github.com/bombergame/common/rest"
@@ -37,8 +36,8 @@ func main() {
 	authClient := authgrpc.NewClient(
 		authgrpc.ClientConfig{
 			ClientConfig: grpc.ClientConfig{
-				ServiceHost: consts.EmptyString,
-				ServicePort: config.GrpcPort,
+				ServiceHost: config.AuthServiceGrpcHost,
+				ServicePort: config.AuthServiceGrpcPort,
 			},
 		},
 		authgrpc.ClientComponents{

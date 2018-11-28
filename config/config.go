@@ -19,8 +19,6 @@ var (
 	StoragePassword = env.GetVar("PROFILES_STORAGE_PASSWORD", "password")
 	StorageSSLMode  = env.GetVar("PROFILES_STORAGE_SSL_MODE", "disable")
 
-	AuthServiceGrpcAddress = env.GetVar(
-		"AUTH_SERVICE_GRPC_ADDRESS",
-		"auth-service:3000",
-	)
+	AuthServiceGrpcHost = env.GetVar("AUTH_SERVICE_GRPC_HOST", "auth-service")
+	AuthServiceGrpcPort = env.GetVar("AUTH_SERVICE_GRPC_PORT", "3000")
 )
