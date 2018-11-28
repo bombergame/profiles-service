@@ -40,12 +40,12 @@ func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
 
 	mx := mux.NewRouter()
 
-	mx.Handle("/", handlers.MethodHandler{
+	mx.Handle("/profiles", handlers.MethodHandler{
 		http.MethodGet:  http.HandlerFunc(srv.getProfiles),
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
 
-	mx.Handle("/{profile_id:[0-9]+}", handlers.MethodHandler{
+	mx.Handle("/profiles/{profile_id:[0-9]+}", handlers.MethodHandler{
 		http.MethodGet:    http.HandlerFunc(srv.getProfile),
 		http.MethodPatch:  srv.WithAuth(http.HandlerFunc(srv.updateProfile)),
 		http.MethodDelete: srv.WithAuth(http.HandlerFunc(srv.deleteProfile)),

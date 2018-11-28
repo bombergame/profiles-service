@@ -108,8 +108,6 @@ func easyjson521a5691DecodeGithubComBombergameProfilesServiceDomains1(in *jlexer
 			out.ID = int64(in.Int64())
 		case "username":
 			out.Username = string(in.String())
-		case "password":
-			out.Password = string(in.String())
 		case "email":
 			out.Email = string(in.String())
 		case "score":
@@ -147,16 +145,6 @@ func easyjson521a5691EncodeGithubComBombergameProfilesServiceDomains1(out *jwrit
 			out.RawString(prefix)
 		}
 		out.String(string(in.Username))
-	}
-	{
-		const prefix string = ",\"password\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.Password))
 	}
 	{
 		const prefix string = ",\"email\":"

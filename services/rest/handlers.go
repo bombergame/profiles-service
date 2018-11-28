@@ -3,6 +3,7 @@ package profilesrest
 import (
 	"github.com/bombergame/common/consts"
 	"github.com/bombergame/common/errs"
+	"github.com/bombergame/profiles-service/domains"
 	"net/http"
 )
 
@@ -39,13 +40,13 @@ func (srv *Service) getProfiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = srv.components.ProfileRepository.GetAllPaginated(pageIndex, pageSize)
+	list, err := srv.components.ProfileRepository.GetAllPaginated(pageIndex, pageSize)
 	if err != nil {
 		srv.WriteErrorWithBody(w, err)
 		return
 	}
 
-	//srv.WriteOkWithBody(w, list) //TODO
+	srv.WriteOkWithBody(w, domains.Profiles(list))
 }
 
 func (srv *Service) getProfile(w http.ResponseWriter, r *http.Request) {
