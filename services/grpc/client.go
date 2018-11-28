@@ -1,6 +1,7 @@
 package profilesgrpc
 
 import (
+	"context"
 	"github.com/bombergame/common/errs"
 	"github.com/bombergame/common/grpc"
 	"strings"
@@ -54,8 +55,12 @@ func (c *Client) IncProfileScore(profileID *ProfileID) (*Void, error) {
 	return nil, nil //TODO
 }
 
-func (c *Client) GetProfileIDByCredentials(in *Credentials) (*ProfileID, error) {
-	return nil, nil //TODO
+func (c *Client) GetProfileIDByCredentials(credentials *Credentials) (*ProfileID, error) {
+	cr, err := c.client.GetProfileIDByCredentials(context.TODO(), credentials)
+	if err != nil {
+		return nil, c.wrapError(err)
+	}
+	return cr, nil
 }
 
 func (c *Client) wrapError(err error) error {
