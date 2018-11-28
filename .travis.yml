@@ -11,13 +11,10 @@ jobs:
     - make clean
 
   - stage: run unit tests
-    before_script:
-    - go get golang.org/x/tools/cmd/cover
-    - go get github.com/mattn/goveralls
     script:
     - make test_units
     after_success:
-    - ${GOPATH}/bin/goveralls -coverprofile=./_test/coverage.out -service=travis-ci
+    - ${GOPATH}/bin/goveralls -coverprofile=./coverage.out -service=travis-ci
     after_script:
     - make clean
 

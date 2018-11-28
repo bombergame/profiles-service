@@ -42,10 +42,16 @@
   version = "v3.2.0"
 
 [[projects]]
-  digest = "1:4c0989ca0bcd10799064318923b9bc2db6b4d6338dd75f3f2d86c3511aaaf5cf"
+  digest = "1:b00d66edb5f40dbbdcd37292851a61c2644356e37d8fb6517394ffb4b24b1c22"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
+    "protoc-gen-go",
+    "protoc-gen-go/descriptor",
+    "protoc-gen-go/generator",
+    "protoc-gen-go/generator/internal/remap",
+    "protoc-gen-go/grpc",
+    "protoc-gen-go/plugin",
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
@@ -110,6 +116,14 @@
   ]
   pruneopts = "UT"
   revision = "60711f1a8329503b04e1c88535f419d0bb440bff"
+
+[[projects]]
+  digest = "1:d1f70995feb8132ca8e99b8bba29823c3273f68c239d9ecd93fa5442a56d546f"
+  name = "github.com/mattn/goveralls"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b71a1e4855f87991aff01c2c833a75a07059c61c"
+  version = "v0.0.2"
 
 [[projects]]
   digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
@@ -187,6 +201,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:62a5fe7e96cc26084b08e939af5f653b1c43529531538922502da46b00f2ac9e"
+  name = "golang.org/x/tools"
+  packages = [
+    "cmd/cover",
+    "cover",
+  ]
+  pruneopts = "UT"
+  revision = "e782529d0ddd4bb872a63766185bebe89c96d1ae"
+
+[[projects]]
+  branch = "master"
   digest = "1:56b0bca90b7e5d1facf5fbdacba23e4e0ce069d25381b8e2f70ef1e7ebfb9c1a"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
@@ -232,6 +257,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/bombergame/auth-service/config",
     "github.com/bombergame/auth-service/services/grpc",
     "github.com/bombergame/common/args",
     "github.com/bombergame/common/auth",
@@ -243,12 +269,15 @@
     "github.com/bombergame/common/logs",
     "github.com/bombergame/common/rest",
     "github.com/golang/protobuf/proto",
+    "github.com/golang/protobuf/protoc-gen-go",
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
     "github.com/lib/pq",
     "github.com/mailru/easyjson",
     "github.com/mailru/easyjson/jlexer",
     "github.com/mailru/easyjson/jwriter",
+    "github.com/mattn/goveralls",
+    "golang.org/x/tools/cmd/cover",
     "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"
