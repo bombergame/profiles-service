@@ -20,7 +20,7 @@
     "services/grpc",
   ]
   pruneopts = "UT"
-  revision = "53436441af704027c5ec65b0c3620165d2a88bbb"
+  revision = "e692ab0e0835e10ab9c96dcedbf5fe4ad0c923b3"
 
 [[projects]]
   branch = "master"
@@ -39,7 +39,7 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "783525e26fe16a35f6158db327f49ec1e588a644"
+  revision = "a47a5e48e060d1345b3abe244f19a4218952b0c8"
 
 [[projects]]
   digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
