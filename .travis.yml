@@ -1,31 +1,31 @@
 language: go
 go:
-- "1.11"
+  - "1.11"
 
 jobs:
   include:
-  - stage: build
-    script:
-    - make build
-    after_script:
-    - make clean
+    - stage: build
+      script:
+        - make build
+      after_script:
+        - make clean
 
-  - stage: run unit tests
-    script:
-    - make run_unit_tests
-    after_success:
-    - ${GOPATH}/bin/goveralls -coverprofile=./coverage.out -service=travis-ci
-    after_script:
-    - make clean
+    - stage: run unit tests
+      script:
+        - make run_unit_tests
+      after_success:
+        - ${GOPATH}/bin/goveralls -coverprofile=./coverage.out -service=travis-ci
+      after_script:
+        - make clean
 
-  - stage: build image
-    services:
-    - docker
-    before_script:
-    - echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-    script:
-    - docker build -t bombergame/profiles-service .
-    after_success:
-    - if [ ${TRAVIS_BRANCH} = "master" ]; then
-        docker push bombergame/profiles-service;
-      fi
+    - stage: build image
+      services:
+        - docker
+      before_script:
+        - echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+      script:
+        - docker build -t bombergame/profiles-service .
+      after_success:
+        - if [ ${TRAVIS_BRANCH} = "master" ]; then
+          docker push bombergame/profiles-service;
+          fi
