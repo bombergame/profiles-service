@@ -8,6 +8,7 @@ import (
 	"github.com/bombergame/profiles-service/repositories"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 )
 
@@ -50,6 +51,8 @@ func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
 		http.MethodPatch:  srv.WithAuth(http.HandlerFunc(srv.updateProfile)),
 		http.MethodDelete: srv.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
+
+	mx.Handle("/metrics", promhttp.Handler())
 
 	srv.SetHandler(srv.WithLogs(srv.WithRecover(mx)))
 
