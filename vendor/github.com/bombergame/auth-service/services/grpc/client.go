@@ -59,5 +59,5 @@ func (c *Client) DeleteAllSessions(id ProfileID) error {
 }
 
 func (c *Client) wrapError(err error) error {
-	return errs.NewServiceError(err) //TODO
+	return errs.NewServiceError(err)
 }

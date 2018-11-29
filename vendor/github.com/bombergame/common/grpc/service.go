@@ -3,6 +3,11 @@ package grpc
 import (
 	"github.com/bombergame/common/auth"
 	"github.com/bombergame/common/logs"
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"net"
 )
@@ -24,10 +29,26 @@ type ServiceComponents struct {
 }
 
 func NewService(cf ServiceConfig, cp ServiceComponents) *Service {
+	logEntry := logrus.NewEntry(cp.Logger.AsLogrusLogger())
+	grpc_logrus.ReplaceGrpcLogger(logEntry)
+
+	srv := grpc.NewServer(
+		grpc_middleware.WithUnaryServerChain(
+			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_recovery.UnaryServerInterceptor(),
+			grpc_logrus.UnaryServerInterceptor(logEntry),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_recovery.StreamServerInterceptor(),
+			grpc_logrus.StreamServerInterceptor(logEntry),
+		),
+	)
+
 	return &Service{
 		Config:     cf,
 		Components: cp,
-		Server:     grpc.NewServer(),
+		Server:     srv,
 	}
 }
 

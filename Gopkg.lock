@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ea366bb9f641210ad6295d0ec1cf1d05339bb5660aa722e43ad896ef19189ecf"
+  digest = "1:8b34bad666d34af0ea96c83ee69d2bf72da95ba4cc6d851bfdce66b34a7edeec"
   name = "github.com/bombergame/auth-service"
   packages = [
     "config",
@@ -12,11 +12,11 @@
     "services/grpc",
   ]
   pruneopts = "UT"
-  revision = "54c3123bff9fc2c46aff99cc69b579dfcf4c523d"
+  revision = "53436441af704027c5ec65b0c3620165d2a88bbb"
 
 [[projects]]
   branch = "master"
-  digest = "1:ac3b4f9e5614cf5bb89787fa6a26ec70c3f7d1214a141b2f3703df11ec856fec"
+  digest = "1:4aeb05d21f0267898d3ef8fd118efd6a676947189c7eac0ef2669844504a5ee5"
   name = "github.com/bombergame/common"
   packages = [
     "args",
@@ -31,7 +31,7 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "9eedf4a0e52f2f35808c6d9ab6a978c0790fde9a"
+  revision = "783525e26fe16a35f6158db327f49ec1e588a644"
 
 [[projects]]
   digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
@@ -42,9 +42,11 @@
   version = "v3.2.0"
 
 [[projects]]
-  digest = "1:b00d66edb5f40dbbdcd37292851a61c2644356e37d8fb6517394ffb4b24b1c22"
+  branch = "master"
+  digest = "1:28acba4064d6ef78bb8b352beccef931c0f85573396499cb2c99365f633a8e89"
   name = "github.com/golang/protobuf"
   packages = [
+    "jsonpb",
     "proto",
     "protoc-gen-go",
     "protoc-gen-go/descriptor",
@@ -55,11 +57,11 @@
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
+    "ptypes/struct",
     "ptypes/timestamp",
   ]
   pruneopts = "UT"
-  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
-  version = "v1.2.0"
+  revision = "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 
 [[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
@@ -84,6 +86,22 @@
   pruneopts = "UT"
   revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
   version = "v1.6.2"
+
+[[projects]]
+  digest = "1:fd3e59e9cc37e30d45a326b0c0662d64b215da64eec353f317e24d6f900f365b"
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"
+  packages = [
+    ".",
+    "logging",
+    "logging/logrus",
+    "logging/logrus/ctxlogrus",
+    "recovery",
+    "tags",
+    "tags/logrus",
+  ]
+  pruneopts = "UT"
+  revision = "c250d6563d4d4c20252cd865923440e829844f4e"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
@@ -163,7 +181,7 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
+  revision = "fae4c4e3ad76c295c3d6d259f898136b4bf833a8"
 
 [[projects]]
   branch = "master"
@@ -208,7 +226,7 @@
     "cover",
   ]
   pruneopts = "UT"
-  revision = "e782529d0ddd4bb872a63766185bebe89c96d1ae"
+  revision = "c5b00d9557fd23dd2a6d9c2f4c80a31d08cac00d"
 
 [[projects]]
   branch = "master"

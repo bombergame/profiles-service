@@ -18,8 +18,6 @@ var (
 	StoragePort     = env.GetVar("SESSIONS_STORAGE_PORT", "3306")
 	StorageName     = env.GetVar("SESSIONS_STORAGE_NAME", "sessions")
 
-	ProfilesServiceGrpcAddress = env.GetVar(
-		"PROFILES_SERVICE_GRPC_ADDRESS",
-		"profiles-service:3000",
-	)
+	ProfilesServiceGrpcHost = env.GetVar("PROFILES_SERVICE_GRPC_HOST", "profiles-service")
+	ProfilesServiceGrpcPort = env.GetVar("PROFILES_SERVICE_GRPC_PORT", "3000")
 )
