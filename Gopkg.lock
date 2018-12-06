@@ -24,7 +24,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4aeb05d21f0267898d3ef8fd118efd6a676947189c7eac0ef2669844504a5ee5"
+  digest = "1:172441fc389b8327dd4834fde8c69262710cddc9c3ca892ff6a4c740dd060c39"
   name = "github.com/bombergame/common"
   packages = [
     "args",
@@ -39,7 +39,7 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "783525e26fe16a35f6158db327f49ec1e588a644"
+  revision = "874bae3756770a02e34d6388fcb6ac308c2b0d9e"
 
 [[projects]]
   digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
