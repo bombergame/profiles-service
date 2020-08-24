@@ -50,6 +50,14 @@
   version = "v3.2.0"
 
 [[projects]]
+  digest = "1:3adf0ef092abc82d9beeaa4473a798cb1b8ebae3c68ddb1b30eea52770c86f82"
+  name = "github.com/felixge/httpsnoop"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "33ec42cfe005395fb4cc4b296781f65d7ffef2c3"
+  version = "v1.0.1"
+
+[[projects]]
   branch = "master"
   digest = "1:28acba4064d6ef78bb8b352beccef931c0f85573396499cb2c99365f633a8e89"
   name = "github.com/golang/protobuf"
@@ -80,12 +88,12 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:664d37ea261f0fc73dd17f4a1f5f46d01fbb0b0d75f6375af064824424109b7d"
+  digest = "1:db6969c1e6d41fb6a90ae54b0e4ac915a96a0c0f1f0f32954518706a561e393e"
   name = "github.com/gorilla/handlers"
   packages = ["."]
   pruneopts = "UT"
-  revision = "7e0847f9db758cdebd26c149d0ae9d5d0b9c98ce"
-  version = "v1.4.0"
+  revision = "d6944a4b0d90ffa4b7b4d6b07c6e177854fb0b84"
+  version = "v1.5.0"
 
 [[projects]]
   digest = "1:e73f5b0152105f18bc131fba127d9949305c8693f8a762588a82a48f61756f5f"
