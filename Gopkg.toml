@@ -14,7 +14,7 @@ required = [
 
 [[constraint]]
   name = "github.com/gorilla/handlers"
-  version = "1.4.0"
+  version = "1.5.1"
 
 [[constraint]]
   branch = "master"
